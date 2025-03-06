@@ -1,0 +1,71 @@
+EPAM Systems - SSE - Fullstack Java + Angular + React
+
+Aditya que-
+1. find avg using stream java 8 (use mapToInt as avg function can be used, its specific to mapToInt)
+2. Design payment system, how can u select different payment on runtime based on param.
+(use strategy + factory pattern) - as interviewer said no if else.
+3. SAGA Microservice pattern.
+4. Coding problem (Simple).
+5. Diff setter and constructor injection. (which is better) 
+-> Constructor because error related to dependency is thrown as compile time).
+
+Glassdoor ques:
+
+**Scenario based questions JAVA. (prepare).
+Backend: 
+1. What is optional class and how to use it? (do java 8 features and coding)
+2. Java 8 features.
+Java life cycle??
+2. How does hashset working internally? 
+3. How do you find the most repeated element in an array and it's count using Java8 (do some stream coding probs).
+4. Collections - types, differences. eg. Treeset/Hashset. ArrayList vs linkedlist
+5. Collection traversals short programs.
+6. How to make class immutable.
+
+DSA
+
+Project self:
+1. Microservice architecture in your project.
+
+1. Find middle of linked list using pointers.
+LRU cache.
+Course schedule 2.
+
+Other
+ design patterns, SOLID patterns, OWASP 10 (asked).
+git, cloud.
+
+JavaScript Questions
+Hoisting, closures.
+Promises.
+JS Object assignment questions. (coding).
+What is the difference between null and undefined in JavaScript?
+What are prototype methods in JavaScript?
+How can we detect changes made to all public properties in JavaScript?
+What is the difference between let and var in JavaScript?
+
+SYstem design
+LRU Cache
+
+JWT (JSON Web Token) Questions
+What are the three important parts of a JWT token?
+Header
+Payload (Subject)
+Signature
+(All are in encoded form)
+How to create a JWT token?
+
+jQuery Questions
+How to find odd rows in a table using jQuery and apply CSS to the background?
+
+Angular & RxJS Questions
+What is the difference between ViewChild and ViewChildren in Angular?
+What is a BehaviorSubject in Angular?
+Difference between BehaviorSubject and Observable in Angular?
+Observables.
+
+SQL & LINQ Questions
+Write an SQL to LINQ query that joins two tables and applies GROUP BY.
+
+Web API Questions
+How to download huge files using Web API?
