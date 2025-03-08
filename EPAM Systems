@@ -26,8 +26,101 @@ AWS
 5. How to purge SQS in Amazon
 --------------------------------
 HIbernate
+
+Hibernate - ORM framework
+
+Mappings:
+1. OneToOne
+class Employee {
+
+ private int employeeId;
+@OneToOne(targetEntity=Department.class)
+private Department department;
+}
+
+2. ManyToOne
+many students have one address
+class Student {
+
+ private int employeeId;
+@ManyToOne(cascade=CascadeType.ALL)
+private Address address;
+}
+
+@Entity
+public class Address {
+    @Id
+    private int addressId;
+    private String street;
+    private String city;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+    private Set<Student> students;  // A Set to store all associated students
+}
+-------------------*** This is good when primary key is associates as foreign key to 2nd table, but if not, then we have to use @JoinColumn and specify column
+//owning side
+public class Student {
+    @Id
+    private int studentId;  // Primary key
+    @ManyToOne
+    @JoinColumn(name = "address_id")  // Foreign key referencing Address table's primary key
+    private Address address;
+}
+
+owned or referenced side
+public class Address {
+    private int addressId;  // Primary key (Not a foreign key)
+    @OneToMany(mappedBy = "address")
+    private Set<Student> students;  // No foreign key here, just a collection of students, This is optional if we don't want students here.
+}
+Address has a primary key (addressId), but it does not directly act as a foreign key.
+
+3. ManyToMany
+many students can have many degrees
+//DegreeStudentThirdTable will get created
+join COlumn and inverseColumn will be fields in third table.
+class Student {
+
+ private int employeeId;
+
+@ManyToMany(targetEntity=Degree.class, cascade = {CascadeType.ALL})
+@JoinTable(name="DegreeStudentThirdTable",
+	  joinColumns = { @JoinColumn(name="StudentId")},
+	  inverseColumns = { @JoinColumn(name = "CertificateId")} )
+private List<Degree> degreess;
+}
+
+
 2. Types of sessions in hibernate
+Session: A short-lived object used for CRUD operations and interacting with the database.
+SessionFactory: A long-lived object that is responsible for creating sessions and managing the Hibernate configuration.
+
+Session Lifecycle:
+
+Open a session: sessionFactory.openSession().
+Begin a transaction: session.beginTransaction().
+Commit the transaction: session.getTransaction().commit().
+Close the session: session.close().
+
 7. Types of caches in Hibernate
+Why cache = hibernate caches query data for faster processing.
+3 types
+1st level (Session cache) - enabled by default, can't disable, part of Session object, objects part of this session not visible to other session.
+When session is closed, cache is lost.** to resolve this 2nd level cache.
+
+2nd level (SessionFactory cache) - disabled by default, need to enable by config, 
+implementation - EHCache, Infinispan. eg. add hibernate-ehcache dependency & add use-second-cache in config.
+Used when u need to access data across session (in same SessionFactory).
+
+Query level cache - used to cache results of queries. (HQL, Criteria or Native queries).
+It stores result set of queries and reuse.
+Stores entity info in 2nd level cache. To use query cache, enable 2nd level and query cache.
+
+String hql = "FROM User WHERE age > 30";
+Query query = session.createQuery(hql);
+query.setCacheable(true); // Enable caching for this query
+List<User> users = query.list(); //result is cache.
+
 8. What is EntityManager?
 9. WHat is PersistenceContext?
 ---------------------------------
@@ -47,7 +140,7 @@ Kafka
 2. Design payment system, how can u select different payment on runtime based on param.
 (use strategy + factory pattern) - as interviewer said no if else.
 3. SAGA Microservice pattern.
-4. Coding problem (Simple).
+4. Coding problem (Simplec
 5. Diff setter and constructor injection. (which is better) 
 -> Constructor because error related to dependency is thrown as compile time).
 GlobalException how to achieve?
