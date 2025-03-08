@@ -1,6 +1,48 @@
 EPAM Systems - SSE - Fullstack Java + Angular + React
-
 Aditya que-
+Core Java
+1. Given 3 payment providers Gpay, AmazonPe, PhonePe implement payment service using loose coupling in Java
+------------------------------
+Spring boot
+3. 
+@Scope("prototype")
+AbcService{
+updateTemperature(){
+	//like update temp 20degree etc
+}
+} 
+XYZService{
+	@Autowired
+	AbcService abcService
+} 
+How will ABCService behave in XYZService as ABCService is prototype
+12. How to create a bean conditionally in Spring boot
+13. LifeCycle of Bean in Spring boot and print sout when each lifecycle method is called
+14. How Spring behaves differently when we use constructorInjection and SetterInjections
+15. What are Spring AOP Design Patterns
+-------------------------------
+AWS
+4. What is partitionKey and sortKey in DynamoDB
+5. How to purge SQS in Amazon
+--------------------------------
+HIbernate
+2. Types of sessions in hibernate
+7. Types of caches in Hibernate
+8. What is EntityManager?
+9. WHat is PersistenceContext?
+---------------------------------
+SQL
+10. SQL - >Find employee whose salary is greater than average salary where employees are grouped by entry_date.
+--------------------------------
+REST API
+
+11. How to manage API versioning
+14. WHat is RMM in REST API.
+--------------------------------
+Kafka
+----------------------------------
+6. Working of Kafka
+
 1. find avg using stream java 8 (use mapToInt as avg function can be used, its specific to mapToInt)
 2. Design payment system, how can u select different payment on runtime based on param.
 (use strategy + factory pattern) - as interviewer said no if else.
@@ -9,6 +51,7 @@ Aditya que-
 5. Diff setter and constructor injection. (which is better) 
 -> Constructor because error related to dependency is thrown as compile time).
 GlobalException how to achieve?
+
 
 Glassdoor ques:
 
