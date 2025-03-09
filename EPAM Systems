@@ -1,4 +1,33 @@
 EPAM Systems - SSE - Fullstack Java + Angular + React
+Tanay que-
+SOLID principles
+Clean code principles 
+OOPs
+Abstract how implemented - abstract class and interface
+Partial vs full abstract - how can we implement.
+Multiple Inheritance.
+What if 2 interfaces - print method(), why only one method to implement 
+by class? Because same signature.
+if return type is different, can we overload.
+Serializable what is it?
+Marker Interface, why is it used?
+
+volatile - Internal working and why used?
+ExecutorService - what is it?
+methods of executorService
+Callable vs Runnable.
+Future vs CompletableFuture
+How did u use CompletableFuture and ExecutorService.
+Java 8 Features:
+Predicate vs BiPredicate
+Consumer
+Functional Interface 
+Return types of these.
+HashSet working.
+Covariant return type.
+Find second non repeating character in stress.
+
+
 Aditya que-
 Core Java
 1. Given 3 payment providers Gpay, AmazonPe, PhonePe implement payment service using loose coupling in Java
@@ -18,6 +47,49 @@ XYZService{
 How will ABCService behave in XYZService as ABCService is prototype
 12. How to create a bean conditionally in Spring boot
 13. LifeCycle of Bean in Spring boot and print sout when each lifecycle method is called
+
+@Component
+public class MyBean {
+    public MyBean() {
+        System.out.println("1. Constructor: MyBean instance created");
+    }
+    @PostConstruct
+    public void init() {
+        System.out.println("2. @PostConstruct: Bean initialization logic");
+    }
+    @PreDestroy
+    public void destroy() {
+        System.out.println("3. @PreDestroy: Cleanup before bean destruction");
+    }
+}
+@Configuration
+class BeanConfig {
+    @Bean(initMethod = "customInit", destroyMethod = "customDestroy")
+    public CustomBean customBean() {
+        return new CustomBean();
+    }
+}
+class CustomBean {
+    public CustomBean() {
+        System.out.println("CustomBean: Constructor called");
+    }
+    public void customInit() {
+        System.out.println("CustomBean: Init method called");
+    }
+    public void customDestroy() {
+        System.out.println("CustomBean: Destroy method called");
+    }
+}
+Expected Output
+1. Constructor: MyBean instance created
+2. @PostConstruct: Bean initialization logic
+CustomBean: Constructor called
+CustomBean: Init method called
+
+// When application is shutting down
+3. @PreDestroy: Cleanup before bean destruction
+CustomBean: Destroy method called
+
 14. How Spring behaves differently when we use constructorInjection and SetterInjections
 15. What are Spring AOP Design Patterns
 -------------------------------
@@ -122,19 +194,98 @@ query.setCacheable(true); // Enable caching for this query
 List<User> users = query.list(); //result is cache.
 
 8. What is EntityManager?
+EntityManager is an interface in JPA that manages database operations for entities.
+
 9. WHat is PersistenceContext?
+
+What is @PersistenceContext?
+@PersistenceContext is a JPA annotation used in Spring and Java EE to inject an EntityManager and manage the persistence context.
+It is the cache of entity instances maintained by JPA.
+Ensures that entities are managed and tracked within a session.
+Provides automatic change detection (any change to a managed entity is automatically synchronized with the database when the transaction commits).
+@Repository
+public class UserRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public void saveUser(User user) {
+        entityManager.persist(user); // Saves user to the database
+    }
+}
 ---------------------------------
 SQL
 10. SQL - >Find employee whose salary is greater than average salary where employees are grouped by entry_date.
+
+select e.* from employees e
+JOIN 
+(
+select entry_date, avg(salary) as avg_salary
+from employees
+ group by entry_date
+ ) as avg_table
+ ON avg_table.entry_date = e.entry_date
+ where e.salary > avg_table.avg_salary;
+
 --------------------------------
 REST API
 
 11. How to manage API versioning
+API versioning ensures backward compatibility while introducing new features. Common strategies include:
+
+1️⃣ URL Path Versioning (Most Common) – Version in the URL (e.g., /api/v1/employees).
+2️⃣ Query Parameter Versioning – Pass version as a query param (/api/employees?version=1).
+3️⃣ Header-Based Versioning – Use custom headers (X-API-Version: 1) or content negotiation (Accept: application/vnd.company.v1+json).
+4️⃣ Subdomain Versioning – Different subdomains (v1.api.company.com).
+5️⃣ API Gateway-Based Versioning – API gateways (Kong, AWS API Gateway) route requests based on URL, headers, or query params.
+✅ Best Approach?
+For public APIs: URL path versioning is preferred (simple & cacheable).
+For enterprise APIs: Header-based versioning keeps URLs clean.
+
 14. WHat is RMM in REST API.
+ "The Richardson Maturity Model (RMM) defines 4 levels of REST API maturity: 
+Level 0 (single endpoint),
+Level 1 (resource-based endpoints),
+Level 2 (proper HTTP methods & status codes),
+and Level 3 (HATEOAS, where responses include hypermedia links to guide clients). A Level 3 API is considered fully RESTful."
+{
+  "id": 123,
+  "name": "Alice",
+  "role": "Engineer",
+  "_links": {
+    "self": { "href": "/employees/123" },
+    "update": { "href": "/employees/123", "method": "PUT" },
+    "delete": { "href": "/employees/123", "method": "DELETE" }
+  }
+}
+
 --------------------------------
 Kafka
 ----------------------------------
 6. Working of Kafka
+Kafka is a distributed event streaming platform 
+-where producers publish messages to topics, 
+-brokers store them in partitions, and 
+-consumers pull messages for processing, 
+ensuring high scalability, durability, and real-time data streaming.
+
+Zookeeper managed it, but since Kafka 3.0, they are using KRaft, distributed manager.
+
+✅ RabbitMQ → Message Broker (Push-based)
+
+Best for real-time messaging (e.g., microservices, task queues).
+Messages are removed after consumption.
+Low latency, good for small messages.
+✅ Kafka → Event Streaming Platform (Pull-based)
+
+Best for big data & real-time analytics (e.g., log processing, event-driven systems).
+Messages are stored for a fixed time (even after reading).
+High throughput, good for large data streams.
+When to Use?
+✔ Use RabbitMQ → For quick messaging between services.
+✔ Use Kafka → For processing large-scale event data.
+
 
 1. find avg using stream java 8 (use mapToInt as avg function can be used, its specific to mapToInt)
 2. Design payment system, how can u select different payment on runtime based on param.
@@ -196,16 +347,75 @@ Hashmap implementation generic algorithm ?
 4. try-with-resources with implementation
 5. SOLID principles with example # Java 8 - Parallel Stream & its pros and cons # Spring Boot - Profiling - Saga Pattern for distributed transactions -- cache concept # Microservices - On Gateways, 
 Discovery server ---> We use Eureka - Hsytrix etc.. --> Fault tolerance # Program - Find Cube of number then filter total > 100 & then find its average
+
+Single Responsibility Principle (SRP) – A class should have only one reason to change.
+✅ Example: Separate User and AuthService classes for user data and authentication.
+Open/Closed Principle (OCP) – Open for extension, closed for modification.
+✅ Example: Use interfaces (Payment) and extend them (CreditCardPayment, PayPalPayment).
+Liskov Substitution Principle (LSP) – Subclasses should replace the base class without breaking functionality.
+✅ Example: Bird should have only behaviors common to all birds (avoid making Penguin extend Bird if it can't fly).
+Interface Segregation Principle (ISP) – No unnecessary dependencies; use specific interfaces.
+✅ Example: Printer and Scanner interfaces instead of one large interface.
+Dependency Inversion Principle (DIP) – High-level modules should depend on abstractions, not concrete implementations.
+✅ Example: Inject NotificationService into UserService instead of hardcoding EmailService.
+
+ACID Properties (Short Explanation for Interviews)
+
+Atomicity – A transaction is all or nothing.
+✅ Example: Money transfer: If debit succeeds but credit fails, rollback.
+Consistency – Database moves from one valid state to another.
+✅ Example: Foreign keys, constraints ensure valid data.
+Isolation – Concurrent transactions don’t interfere.
+✅ Example: Using isolation levels (READ COMMITTED, SERIALIZABLE).
+Durability – Committed data is permanently saved.
+✅ Example: Data written to disk and logs to survive crashes.
+
+DB Isolation Levels : comes in picture in case of concurrency txs to prevent dirty reads.
+Imagine a banking system where multiple users are transferring money at the same time:
+
+Read Uncommitted: A user sees another user's unfinished transaction (risky).
+Read Committed: A user only sees committed transactions (safer).
+Repeatable Read: A user's balance remains the same throughout a transaction.
+if a transaction reads the same row multiple times, it will always see the same data throughout the transaction.
+
+Serializable: Only one user at a time can make changes (slowest but safest), locks entire table during tx.
+
 1. What is optional class and how to use it? (do java 8 features and coding)
 2. Java 8 features.
 Java life cycle??
 2. How does hashset working internally? 
 3. How do you find the most repeated element in an array and it's count using Java8 (do some stream coding probs).
+Map<Integer, Long> frequencyMap = Arrays.stream(arr)
+                .boxed()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        // Print the frequency of each element
+        frequencyMap.forEach((key, value) -> System.out.println(key + " -> " + value));
 4. Collections - types, differences. eg. Treeset/Hashset. ArrayList vs linkedlist
 5. Collection traversals short programs.
 6. How to make class immutable.
 7. Lazy keyword
 What does the specific annotations in Spring mean?
+@Component	Generic Spring bean
+@Service	Marks a service layer component
+@Repository	Marks a DAO/repository component
+@Controller	Marks a Spring MVC controller
+@RestController	Combines @Controller and @ResponseBody
+@Autowired	Dependency injection
+@Qualifier	Specifies a particular bean when multiple exist
+@Primary	Marks a bean as the default
+@Value	Injects property values
+@Configuration	Defines configuration class
+@Bean	Defines a bean
+@Scope	Defines bean scope
+@SpringBootApplication	Main Spring Boot application class
+@RequestMapping	Maps HTTP requests
+@GetMapping, @PostMapping	Maps specific HTTP methods
+@PathVariable	Extracts values from URL
+@RequestParam	Extracts query parameters
+@RequestBody	Binds JSON/XML request bodies
+@ResponseBody	Converts return values to JSON/XML
+@Transactional	Manages transactions
+@PreAuthorize	Restricts access to methods
 DSA Problem: Given an array of integers, find the longest consecutive sequence of numbers and return its length. (Time Complexity: O(n))
 Java 8 Problem: Given a list of strings, write a Java 8 program to filter out strings that start with "A", convert them to uppercase, and sort them
 java 8 releted question Hashing Question
@@ -226,6 +436,7 @@ finalize vs dispose
 
 DSA
 Max sum subarray
+
 Rotate LL
 Graph BFS
 Reverse a LL in 1 traversal
@@ -254,8 +465,29 @@ Project self:
 1. Microservice architecture in your project.
 
 1. Find middle of linked list using pointers.
+
+    public ListNode middleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        if(head == null) return head;
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow;
+    }
+
 ***Need to stream on list of StudentsGrade class which has 2 attribute: studentName and Map of student grades.
 Requirement: 1. get average marks map for reach student 
+        Map<String, Double> averageMarks = students.stream()
+            .collect(Collectors.toMap(
+                StudentsGrade::getStudentName,
+                student -> student.getStudentGrades().values().stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0.0)
+            ));
 2. a map of students having student name who scored highest and in which subject.
 LRU cache.
 - House Robber and Sort Colors
@@ -388,6 +620,11 @@ Two Practical Questions were asked in the end based on Streams and Problem Solvi
 Given a String array String[] str = ["This is spring boot @autowired", "I don't remember @correctly", "but it was like this only @qualifier annotation", "@autowired @qualifier"];
 
 Q.1 - Find all the unique words that starts with '@'. I was asked to solve this using Java Streams. EPAM is extremely serious about streams :) .
+  // Stream pipeline to extract unique words starting with '@'
+        Set<String> uniqueWords = Arrays.stream(str)  // Convert array to stream
+            .flatMap(sentence -> Arrays.stream(sentence.split(" "))) // Split on a single space
+            .filter(word -> word.startsWith("@")) // Filter words that start with '@'
+            .collect(Collectors.toSet()); // Collect unique words into a Set
 
 Output = [@autowired,@qualifier,@correctly];
 
