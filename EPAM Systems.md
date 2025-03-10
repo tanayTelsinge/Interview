@@ -2,15 +2,74 @@ EPAM Systems - SSE - Fullstack Java + Angular + React
 Tanay que-
 SOLID principles
 Clean code principles 
+1. Extract Method Principle - function should do one thing and do well , should be small 20-30 lines, avoid deeply nested structures by early returns or helper functns.
+2. Minimize Function Parameters (reduce complexity) - atmost 3, more params, hard to read and maintain, use Objects instead.
+3. Dependency Inversion principle - use abstractions instead of concrete classes, more loose coupling, useful to swap implementations w/o affecting client code.
+   
 OOPs
 Abstract how implemented - abstract class and interface
-Partial vs full abstract - how can we implement.
+Partial vs full abstract - how can we implement. 
+Full Abstraction - via Interface only, no concrete method.
+Partial abstraction - via abstract classes, some concrete methods.
+
 Multiple Inheritance.
 What if 2 interfaces - print method(), why only one method to implement 
-by class? Because same signature.
+interface A {
+    void print();
+}
+interface B {
+    void print();
+}
+// Class implementing both interfaces
+class MyClass implements A, B {
+    public void print() { // Only one implementation required -> if default method, then must override here else compilation error.
+        System.out.println("Printing from MyClass");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        MyClass obj = new MyClass();
+        obj.print(); // Output: Printing from MyClass
+    }
+}
+Both A and B have void print(); with the same signature (same name and parameters).
+Java treats them as the same method in the implementing class.
+**But if print has implementation (default method), then need to override.
+To call one of interface's default method. We do interfaceName.super.method().
+class MyClass implements A, B {
+    public void print() {
+        A.super.print(); // Call A's default method
+    }
+}
+
 if return type is different, can we overload.
 Serializable what is it?
+-convert object --> byte stream -> can be saved to a file, sent over a network, or stored in a database. 
+-The reverse process, deserialization, converts the byte stream --> object.
 Marker Interface, why is it used?
+example take serialization
+
+```
+Step 1: Checking for Serializable Implementation
+In the ObjectOutputStream.writeObject() method (part of the Java serialization mechanism), Java first checks if the object implements Serializable:
+
+Snippet from ObjectOutputStream.writeObject()
+java
+Copy
+Edit
+public final void writeObject(Object obj) throws IOException {
+    if (obj == null) {
+        writeNull(); // Handle null objects
+        return;
+    }
+    
+    if (!(obj instanceof Serializable)) {
+        throw new NotSerializableException(obj.getClass().getName());
+    }
+
+    writeNonNullObject(obj);  // Continue serialization process
+}
+```
 
 volatile - Internal working and why used?
 ![image](https://github.com/user-attachments/assets/e0a7bebd-acda-47d2-a3cd-5a01b134ff73)
