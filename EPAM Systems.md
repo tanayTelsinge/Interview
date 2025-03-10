@@ -50,13 +50,10 @@ Marker Interface, why is it used?
 example take serialization
 
 ```
-Step 1: Checking for Serializable Implementation
-In the ObjectOutputStream.writeObject() method (part of the Java serialization mechanism), Java first checks if the object implements Serializable:
+//Checking for Serializable Implementation
+//In the ObjectOutputStream.writeObject() method (part of the Java serialization mechanism),
+//Java first checks if the object implements Serializable:, else throws NotSerializableException.
 
-Snippet from ObjectOutputStream.writeObject()
-java
-Copy
-Edit
 public final void writeObject(Object obj) throws IOException {
     if (obj == null) {
         writeNull(); // Handle null objects
