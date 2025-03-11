@@ -47,6 +47,9 @@ Serializable what is it?
 -convert object --> byte stream -> can be saved to a file, sent over a network, or stored in a database. 
 -The reverse process, deserialization, converts the byte stream --> object.
 Marker Interface, why is it used?
+- Tagging Mechanism – It marks a class to indicate special behavior to the JVM or frameworks.
+- Runtime Identification – The JVM checks it using instanceof or reflection (e.g., Serializable).
+
 example take serialization
 
 ```
@@ -68,6 +71,57 @@ public final void writeObject(Object obj) throws IOException {
 }
 ```
 
+Externalizable vs Serializable
+Feature		Serializable					Externalizable
+Method Control	JVM handles serialization automatically		Developer must manually implement serialization
+Performance	Can be slow due to default serialization	Faster, as only required fields are serialized
+Methods to Implement	None (automatic)			writeExternal() and readExternal()
+Customization	Limited (transient fields, writeObject())	Fully customizable serialization logic
+Security	Risk of unintended field serialization		Full control over sensitive data
+When to use     Need automatic serialization                    Have Complex objects, Performance issue, need to exclude sensitive fields.
+
+```
+import java.io.*;
+
+class Person implements Externalizable {
+    String name;
+    int age;
+
+    public Person() {}  // Mandatory default constructor
+    public Person(String name, int age) { this.name = name; this.age = age; }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeInt(age);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException {
+        name = in.readUTF();
+        age = in.readInt();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Person p = new Person("Alice", 25);
+
+        // Serialize
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("data.ser"));
+        oos.writeObject(p);
+        oos.close();
+
+        // Deserialize
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data.ser"));
+        Person deserialized = (Person) ois.readObject();
+        ois.close();
+
+        System.out.println(deserialized.name + ", " + deserialized.age);
+    }
+}
+
+```
 volatile - Internal working and why used?
 ![image](https://github.com/user-attachments/assets/e0a7bebd-acda-47d2-a3cd-5a01b134ff73)
 By Default, thread first sets value in cache, and then updates it in RAM.
@@ -80,17 +134,214 @@ Now, it is written and read directly from RAM.
 
 ExecutorService - what is it?
 methods of executorService
+submit() → Executes a single task.
+invokeAll() & invokeAny() → Execute multiple tasks.
+shutdown() & shutdownNow() → Stop the executor service.
+
 Callable vs Runnable.
+Feature			Runnable						Callable<T>
+Package			java.lang						java.util.concurrent
+Return Type		void (no result)					Returns a value (T)
+Exception Handling	Cannot throw checked exceptions				Can throw checked exceptions
+Used with		Thread, ExecutorService.submit(Runnable)		ExecutorService.submit(Callable<T>)
+
+```java
+import java.util.concurrent.*;
+
+public class RunnableVsCallable {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        // Runnable Task (No Return Value)
+        Runnable runnableTask = () -> System.out.println("Runnable executed by " + Thread.currentThread().getName());
+        executor.execute(runnableTask);  // No return value
+
+        // Callable Task (Returns a Value)
+        Callable<Integer> callableTask = () -> {
+            Thread.sleep(1000); // Simulate some computation
+            return 42;
+        };
+        Future<Integer> future = executor.submit(callableTask);  // Returns Future
+
+        System.out.println("Callable Result: " + future.get()); // Blocks until result is ready
+
+        executor.shutdown();
+    }
+}
+
+```
 Future vs CompletableFuture
+Feature			Future			CompletableFuture
+Result Retrieval	get() (Blocking)	thenApply(), thenAccept() (Non-Blocking)
+Exception Handling	Requires try-catch	exceptionally(), handle()
+Chaining Tasks		Not supported		Supports chaining (thenApply(), thenCompose())
+Multiple Tasks Exectn   Use ExecutorService.invokeAll()	CompletableFuture.allOf()
+Parallel Execution	Requires explicit ExecutorService  Built-in support (supplyAsync(), runAsync())
+
+Future code snippet:
+```java
+import java.util.concurrent.*;
+
+public class FutureExample {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Callable<Integer> task = () -> {
+            Thread.sleep(1000);
+            return 42;
+        };
+        Future<Integer> future = executor.submit(task);
+        // Blocking call (waits for result)
+        Integer result = future.get();
+        System.out.println("Future Result: " + result);
+        executor.shutdown();
+    }
+}
+
+```
+
+```java
+import java.util.concurrent.*;
+
+public class CompletableFutureExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            try { Thread.sleep(1000); } catch (InterruptedException e) {}
+            return 42;
+        }, executor);
+
+        future.thenAccept(result -> System.out.println("CompletableFuture Result: " + result));
+
+        System.out.println("Doing something else...");
+
+        executor.shutdown();
+    }
+}
+```
 How did u use CompletableFuture and ExecutorService.
+answered above.
 Java 8 Features:
 Predicate vs BiPredicate
-Consumer
+- both return boolean, but Predicate takes 1 argument, BiPredicate takes 2.
+- Predicate<Integer> isEven = n -> n % 2 == 0;
+- BiPredicate<Integer, Integer> isSumEven = (a, b) -> (a + b) % 2 == 0;
+
+ Function<T, R> → Takes input, returns output (Use for transformations).
+   Function<Integer, String> intToString = num -> "Number: " + num;
+   System.out.println(intToString.apply(10));
+ Consumer<T> → Takes input, no return (Use for actions like printing/logging).
+ 
+ Consumer<String> printMessage = message -> System.out.println("Message: " + message);
+ printMessage.accept("Hello, World!");
+ 
+ Supplier<R> → No input, returns output (Use for providing/generating values). eg. random number.
+Supplier<Double> randomNumber = () -> Math.random();
+randomNumber.get().
+
 Functional Interface 
-Return types of these.
+✔ A functional interface has exactly one abstract method.
+✔ It enables lambda expressions for concise code.
+✔ Java provides built-in functional interfaces in java.util.function.
+✔ The @FunctionalInterface annotation is optional but recommended for safety.
+
+Return types of these. - function -T takes one arg returns R(result), predicate (one T,boolean R), consumer (one T, no R), supplier (no T, one R)
 HashSet working.
+ Stores unique elements (No duplicates)
+✔ Uses HashMap internally (Elements are keys, values are a dummy object)
+✔ Unordered (Does not maintain insertion order)
+✔ Allows null value
+✔ Operations (add(), remove(), contains()) are O(1) average, O(n) worst case
+✔ Uses hashCode() for bucket placement
+✔ Collision handling: if collision, adds a new node in linkedlist
+
+Working of hashCode() and equals() in HashSet
+hashCode(): Determines the bucket where the element will be stored.
+equals(): If multiple elements have the same hashCode(), equals() is used to check for actual equality.
+Scenario:
+If hashCode() is different → Element goes to a different bucket.
+If hashCode() is the same → equals() is checked.
+If equals() returns true → Duplicate, not added.
+If equals() returns false → Collision, element stored in the same bucket (Linked List or Balanced Tree).
+
+Before Java 8 → Linked List
+Java 8+ → Balanced Tree (Red-Black Tree) for large collision
+
 Covariant return type.
+- We can return Child as Type to Parent Type
+-  no need to explicit casting. (earlier if not typecasted, it threw ClassCastException at runtime).
+-Introduced in Java 5.
+
+Before Covariant return type support
+```java
+class Animal {
+    Animal getAnimal() {  // Parent class method
+        return new Animal();
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    Animal getAnimal() {  // Cannot return `Dog`, must return `Animal` (check return type)
+        return new Dog();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = (Dog) new Dog().getAnimal();  // Explicit cast needed ❌
+        System.out.println("Dog object: " + dog);
+    }
+}
+
+```
+
+```java
+class Animal {
+    Animal getAnimal() {  // Parent method
+        return new Animal();
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    Dog getAnimal() {  // Covariant return type: returning `Dog`
+        return new Dog();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog().getAnimal();  // No explicit cast needed ✅
+        System.out.println("Dog object: " + dog);
+    }
+}
+
+
+```
 Find second non repeating character in stress.
+s = "stress";
+solution - r
+
+  String s = "stress";
+
+LinkedHashMap<Character, Long> freqMap = s.chars()
+	.mapToObj(c -> (char) c)
+	.collect(
+		Collectors.groupingBy(
+			Function.identity(), //as character would be key itself
+			LinkedHashMap::new,
+			Collectors.counting()) // counting returns Long
+	);
+Character res = freqMap
+	.entrySet()
+	.stream()
+	.filter(word -> word.getValue() == 1)
+	.skip(1)
+	.findFirst() //first first returns Optional hence use get
+	.get()
+	.getKey(); //as get() will return entry
+System.out.println(res);
 
 
 Aditya que-
@@ -310,7 +561,7 @@ For enterprise APIs: Header-based versioning keeps URLs clean.
 
 14. WHat is RMM in REST API.
  "The Richardson Maturity Model (RMM) defines 4 levels of REST API maturity: 
-Level 0 (single endpoint),
+Level 0 (single endpoint), eg. only POST
 Level 1 (resource-based endpoints),
 Level 2 (proper HTTP methods & status codes),
 and Level 3 (HATEOAS, where responses include hypermedia links to guide clients). A Level 3 API is considered fully RESTful."
