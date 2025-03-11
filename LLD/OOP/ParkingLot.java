@@ -3,7 +3,7 @@ import java.util.List;
 
 // ✅ Demonstrating SOLID + OOP
 public class ParkingLot {
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         ParkingLotManager lotManager = new ParkingLotManager(5);
 
         Vehicle ferrari = new SportsCar("MH12 XV8080");
