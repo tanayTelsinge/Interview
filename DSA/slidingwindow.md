@@ -76,5 +76,12 @@ Dynamic window template
 
 ---
 
-🔥 **This is the ultimate sliding window problem list for FAANG interviews!** 🚀  
-Would you like **detailed code solutions** for any specific problem?
+1️⃣ When to Use a Queue (FIFO - First In, First Out)?
+✅ Use a Queue when:
+You need to process elements in the order they appear (FIFO).
+You don't need to remove elements from both ends—only from the front.
+You are storing elements for sequential processing (e.g., storing negative numbers, indexes, etc.).
+🔹 Examples of Problems Using a Queue
+Problem	Why Use a Queue?
+First Negative Number in Every Window of Size K	Stores negative numbers in order, removes expired ones from the front.
+Count Distinct Elements in Every Window of Size K	Stores numbers to track count in a rolling window.
