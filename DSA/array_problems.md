@@ -1,6 +1,6 @@
 | **Category** | **Problem** | **Basic Approach** | **Time Complexity** | **Space Complexity** | **Optimum Approach** | **Time Complexity** | **Space Complexity** |
 |-------------|------------|-------------------|----------------|----------------|-----------------|----------------|----------------|
-| **Two Pointers** | Two Sum (Sorted) | Brute-force checking pairs | O(n²) | O(1) | Two-pointer approach | O(n) | O(1) |
+| **Two Pointers** | Two Sum (Sorted) | Brute-force checking pairs | O(n²) | O(1) | Hashmap<num,idx> complmt = target - nums[i] present in hashmap, (i, map.get(complmt))  | O(n) | O(1) |
 |  | Move Zeroes | Copy non-zero elements to new array | O(n) | O(n) | In-place swap using two pointers | O(n) | O(1) |
 |  | Sort Colors | Count 0s, 1s, and 2s, then overwrite | O(n) | O(1) | Dutch National Flag Algorithm | O(n) | O(1) |
 |  | Container With Most Water | Check every pair | O(n²) | O(1) | Two-pointer technique | O(n) | O(1) |
