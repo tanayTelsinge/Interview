@@ -246,6 +246,89 @@ Example :
 ![image](https://github.com/user-attachments/assets/afe85eee-5753-4a48-9250-f2321d46dd8b)
 
 
+---
+### ThreadPool
+
+![image](https://github.com/user-attachments/assets/1478f86c-72d8-4fce-ab0b-05eadc763385)
+
+-Tasks are in queue, worker thread is assigned for task, once completed -> returns back to ThreadPool and waits for new task.
+- If no thread is free, task waits in queue.
+- Min Pool Size - minimum no. of pre-created threads.
+- Max Pool Size - max no of threads we can create.
+- Queue Size - length of queue (how much tasks we can accommodate).
+- What should be above values? Interview Que.
+
+- Task will wait in queue till any thread in threadpool is available.
+- But what if queue also fills up, it checks max pool size, and makes new threads accordingly.
+  ![image](https://github.com/user-attachments/assets/da864f63-63b0-4d80-b15c-62487a5f60b9)
+
+#### @Async Annotation:
+- If we add this to a method, it will not execute in main thread, but initiates a new thread and executes in that.
+![image](https://github.com/user-attachments/assets/4373ae74-8b27-49d5-97a0-cf25c5c1f846)
+
+- Need to add @EnableAsync annotation at @SpringBootApplication class -> if Spring boot sees this, it start to create bean for Async classes.
+- ![image](https://github.com/user-attachments/assets/9c51d2c7-2713-4235-9201-27ebdc077b8b)
+- ![image](https://github.com/user-attachments/assets/3e0a6c4b-74b7-4066-b59c-0a8620d9de60)
+- ![image](https://github.com/user-attachments/assets/bbeb5086-6750-455e-8838-7fa0a8c95952)
+- ![image](https://github.com/user-attachments/assets/b0e29c94-cd94-45f1-80aa-d6563a057ec3)
+- ![image](https://github.com/user-attachments/assets/59cb8717-8379-4f4d-94ba-8947b356bc16)
+
+- Use case of Async
+
+- Case 1 - default ThreadPoolTaskExecutor
+
+- ![image](https://github.com/user-attachments/assets/55bac9eb-5cf8-4eb4-a934-b35152941316)
+- ![image](https://github.com/user-attachments/assets/bd4800cb-1633-475f-a357-18a0ec15f885)
+- ![image](https://github.com/user-attachments/assets/c44b99c8-453f-4780-a66b-8e9006f8ba88)
+- Core pool size is 8, hence thread 1 is started again after 8.
+- Notice queue size and max pool size is so high (Integer.MAX_VALUE), hence not recommended.
+- ![image](https://github.com/user-attachments/assets/64626ed3-b7d0-4d83-9223-a3b931bb0cbc)
+
+- Case 2 - own custom ThreadPoolTaskExecutor
+- ![image](https://github.com/user-attachments/assets/9a45b49e-2eff-40d9-ac76-60377e8b5bfc)
+- ![image](https://github.com/user-attachments/assets/18c943ec-6b8f-417d-b4f3-60802321e299)
+- ![image](https://github.com/user-attachments/assets/c43047db-3c51-4902-a633-13afd07059d7)
+- ![image](https://github.com/user-attachments/assets/a7868874-9fe5-4720-9794-b946c5f4282f)
+- ![image](https://github.com/user-attachments/assets/464e02ce-a23f-4191-b1b1-84109553bda5)
+- Here, you can see MyThread-1,2 and so on are created for tasks,
+- http-nio-8080-exec-5 , -6 are putting in queue, after 6, MyThread3 is picking up tasks (because minPoolSize =2, and queue got full).
+
+- Use case 3 - create own custom ThreadPoolExecutor (Java one)
+- ![image](https://github.com/user-attachments/assets/5d066381-ce59-4c85-abb2-0d1cdd6c5a4f)
+- ![image](https://github.com/user-attachments/assets/59749ba4-6227-4b97-a942-3973b7c8892f)
+- Here defaultExecutor will be null, so it will pickup SimpleTaskExecutor
+- ![image](https://github.com/user-attachments/assets/ab37d24e-f2ef-443a-bdd3-4a41597f73fb)
+- ![image](https://github.com/user-attachments/assets/f55ea27b-c0a3-4f07-a01a-fe8cc17aa5db)
+
+- ![image](https://github.com/user-attachments/assets/64430b38-c5a5-4c67-8ec2-fc20adb53439)
+- How to use java one ThreadPoolExecutor - specify its name
+- ![image](https://github.com/user-attachments/assets/3001bd0b-32e2-4a34-9608-758d4b8354cf)
+- ![image](https://github.com/user-attachments/assets/399ba932-bba1-4747-917b-5f3362f2c9be)
+
+- Industry Standard - I only want my executor to be picked up always
+- ![image](https://github.com/user-attachments/assets/b735e381-8eac-4682-810b-87c1057fdc9f)
+- implement AsyncConfigurer and override getAsyncExecutor
+
+- ![image](https://github.com/user-attachments/assets/87807c84-46b0-467e-862c-3f3da8628bc7)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
