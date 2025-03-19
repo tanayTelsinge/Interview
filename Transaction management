@@ -130,5 +130,5 @@ public void methodB() {
 - **Programmatic (`TransactionTemplate`)**: Provides finer control over transactions.
 - **Propagation Types**: Controls how transactions interact when calling other transactional methods.
 
-Would you like a deeper dive into any specific propagation behavior? 🚀
+
 
