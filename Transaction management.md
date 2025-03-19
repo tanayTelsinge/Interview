@@ -13,7 +13,15 @@ END OF TRANSACTION
 ## 1. Declarative vs. Programmatic Transactions
 
 ### 1.1 Declarative Transactions (`@Transactional`)
-Declarative transaction management uses the `@Transactional` annotation at the service layer. It is managed by Spring and does not require manual handling.
+Declarative transaction management uses the `@Transactional` annotation at the service layer.
+It is managed by Spring and does not require manual handling. (Tx Manager will be selected by Spring boot).
+If you want to specify which tx manager to select, 
+create appconfig with @Configuration -> create bean of PlatFormTxManager and create TxManager, for eg. here its DataSourceTransactionManager
+
+![image](https://github.com/user-attachments/assets/3c7b4065-5080-45f7-a8d6-3d0b1e900318)
+![image](https://github.com/user-attachments/assets/c0617580-332e-4f4c-aca3-c0cc04fc155b)
+
+
 
 #### Example: Declarative Transaction
 ```java
@@ -125,10 +133,21 @@ public void methodB() {
 
 ---
 
-## Summary
-- **Declarative (`@Transactional`)**: Simple and recommended for most cases.
-- **Programmatic (`TransactionTemplate`)**: Provides finer control over transactions.
-- **Propagation Types**: Controls how transactions interact when calling other transactional methods.
 
+## Transaction heirarchy
+![image](https://github.com/user-attachments/assets/0485ffde-813d-4298-abcf-cc8f05624690)
+![image](https://github.com/user-attachments/assets/02872a4a-1683-4c3f-bdeb-7f604f48410b)
+
+
+- TransactionManager is empty interface.
+- Platform TransactionManager has 3 abstract methods.
+- Abstract Platform Tx Manager provides default implementations.
+- Different Mgrs - logics of commit rollback is almost same, just specific things are overridden or changed.
+- DataSource Tx Manager - JDBC Tx Manager --> we can write queries.
+- Hibernate Tx Manager - entity and transaction related to it.
+- JPA Tx Manager - inbuilt JPA methods for entities.
+- JTA Tx Manager - used in distributed tx or 2 phase commit. (others for local tx).
+
+- 
 
 
