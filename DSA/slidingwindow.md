@@ -37,6 +37,62 @@ Dynamic window template
     }
 ```
 
+# 📌 **Sliding Window vs. Prefix Sum vs. Other Approaches Decision Table**
+This guide will help you classify **subarray problems** in **FAANG-style interviews** within **2 minutes**.  
+
+---
+
+## ✅ **Step 1: Is the problem about contiguous subarrays?**
+| Question                      | Answer | Next Step |
+|--------------------------------|--------|-----------|
+| Are we looking for a subarray (contiguous elements)? | ❌ No  | Use **Dynamic Programming (DP) for subsequences** |
+|                                | ✅ Yes  | Go to Step 2 |
+
+---
+
+## ✅ **Step 2: Is the window size fixed or variable?**
+| Condition                          | Answer | Approach | Example FAANG Problem |
+|------------------------------------|--------|----------|----------------------|
+| Is the subarray size `k` **given**? | ✅ Yes  | **Fixed-size Sliding Window** | [Maximum Sum Subarray of Size K (Leetcode 643)](https://leetcode.com/problems/maximum-average-subarray-i/) |
+| Does the window size **depend on a condition** (sum ≤, ≥, exact sum, at most/least `goal`)? | ✅ Yes  | **Variable-size Sliding Window (Expand & Shrink)** | [Minimum Size Subarray Sum (Leetcode 209)](https://leetcode.com/problems/minimum-size-subarray-sum/) |
+| Are we counting subarrays instead of finding one? | ✅ Yes  | **Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
+
+---
+
+## ✅ **Step 3: Are negative numbers present?**
+| Condition                          | Answer | Approach | Example FAANG Problem |
+|------------------------------------|--------|----------|----------------------|
+| Are all numbers **non-negative**?  | ✅ Yes  | **Use Sliding Window** | [Longest Subarray of 1s After Deleting One Element (Leetcode 1493)](https://leetcode.com/problems/longest-subarray-of-1s-after-deleting-one-element/) |
+| Do numbers include **negatives**?  | ✅ Yes  | **Use Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
+| Does the problem involve **maximum subarray sum**? | ✅ Yes | **Kadane’s Algorithm** | [Maximum Subarray (Leetcode 53)](https://leetcode.com/problems/maximum-subarray/) |
+
+---
+
+## 🔹 **Final Decision Table Based on FAANG Problems**
+| **Problem Type** | **Sliding Window Type?** | **Approach** | **Example FAANG Problem** |
+|------------------|------------------|------------|----------------------|
+| Find max/min sum of **subarray of size `k`** | **Fixed-size** | **Basic sliding window** | [Max Sum of Subarray of Size K (Leetcode 643)](https://leetcode.com/problems/maximum-average-subarray-i/) |
+| Find **smallest/largest subarray** with sum ≥, ≤ `goal` | **Variable-size** | **Expand & shrink sliding window** | [Minimum Size Subarray Sum (Leetcode 209)](https://leetcode.com/problems/minimum-size-subarray-sum/) |
+| Find **number of subarrays** with sum = `goal` | ❌ No | **Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
+| Find **longest subarray with sum ≤ goal** (Negative numbers exist) | ❌ No | **Prefix Sum + Sliding Window (TreeMap)** | [Longest Well-Performing Interval (Leetcode 1124)](https://leetcode.com/problems/longest-well-performing-interval/) |
+| Find **maximum sum of any subarray** | ❌ No | **Kadane’s Algorithm** | [Maximum Subarray (Leetcode 53)](https://leetcode.com/problems/maximum-subarray/) |
+| Find **longest substring with at most `k` distinct characters** | ✅ Yes | **Sliding Window + HashMap** | [Longest Substring with At Most K Distinct Characters (Leetcode 340)](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) |
+| Find **length of longest substring without repeating characters** | ✅ Yes | **Sliding Window + HashSet** | [Longest Substring Without Repeating Characters (Leetcode 3)](https://leetcode.com/problems/longest-substring-without-repeating-characters/) |
+
+---
+
+## 🔥 **Google-Specific Interview Problems**
+| **Problem** | **Approach** | **Leetcode Link** |
+|------------|------------|----------------------|
+| Find subarray with given XOR | **Prefix Sum + HashMap** | [Leetcode 1442](https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/) |
+| Find max sum of subarray with at most `k` distinct numbers | **Sliding Window + HashMap** | [Leetcode 904](https://leetcode.com/problems/fruit-into-baskets/) |
+| Longest substring containing all vowels in order | **Sliding Window + HashMap** | [Leetcode 1839](https://leetcode.com/problems/longest-substring-of-all-vowels-in-order/) |
+| Number of subarrays with bounded maximum | **Sliding Window** | [Leetcode 795](https://leetcode.com/problems/number-of-subarrays-with-bounded-maximum/) |
+| Find the shortest subarray with sum at least `k` | **Deque (Monotonic Queue) + Prefix Sum** | [Leetcode 862](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) |
+
+---
+
+
 # 🔥 FAANG Sliding Window Problems - Comprehensive Summary Table
 
 | **Problem** | **Type** | **Expand Condition** | **Shrink Condition** | **Result Update** | **TC / SC** | **Data Structure Used** | **Why This Data Structure?** |
