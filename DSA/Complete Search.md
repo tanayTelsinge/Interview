@@ -9,8 +9,9 @@ gives the correct answer.
 -  If complete search is too slow, other techniques, such as
 greedy algorithms or dynamic programming, may be needed.
 
-1. Generating subset
-   ![image](https://github.com/user-attachments/assets/240ebf3f-9d10-487b-b164-d37599e18b2d)
+1. Generating subset - method 1 (Exclude / Include)
+
+![image](https://github.com/user-attachments/assets/240ebf3f-9d10-487b-b164-d37599e18b2d)
 
 ```java
 void search(int k) {
@@ -25,8 +26,31 @@ void search(int k) {
 }
 ```
 - Function search is called with parameter k.
-- exclude / include logic.
+- exclude (left tree) / include (right tree) logic.
 - if k == n, means all elements are processed and subset is generated.
 
 ![image](https://github.com/user-attachments/assets/cd39a4f5-283f-44be-aa20-833de2ea5def)
+
+ Method 2 
+ ![image](https://github.com/user-attachments/assets/9b5b41a2-ab12-4414-9d06-49f785475854)
+
+ ```java
+
+//The following code goes through the subsets of a set of n elements
+for (int b = 0; b < (1<<n); b++) {
+// process subset
+}
+
+```
+
+```C++
+
+for (int b = 0; b < (1<<n); b++) {
+Set<int> subset;
+for (int i = 0; i < n; i++) {
+if (b&(1<<i)) subset.add(i);
+}
+}
+
+```
 
