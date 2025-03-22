@@ -6,10 +6,10 @@
 public static int maxSumSubArray(int[] arr, int k) {
     int maxSum = Integer.MIN_VALUE, windowSum = 0;
     for (int i = 0; i < arr.length; i++) {
-        windowSum += arr[i];
-        if (i >= k - 1) {
-            maxSum = Math.max(maxSum, windowSum);
-            windowSum -= arr[i - (k - 1)];
+        windowSum += arr[i]; // Add current element to window
+        if (i >= k - 1) { // Once window size reaches k
+            maxSum = Math.max(maxSum, windowSum); // Update max sum
+            windowSum -= arr[i - (k - 1)]; // Remove the leftmost element
         }
     }
     return maxSum;
@@ -22,10 +22,10 @@ public static int maxSumSubArray(int[] arr, int k) {
 public static int minSubArrayLen(int k, int[] arr) {
     int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
     for (int right = 0; right < arr.length; right++) {
-        sum += arr[right];
-        while (sum >= k) {
-            minLen = Math.min(minLen, right - left + 1);
-            sum -= arr[left++];
+        sum += arr[right]; // Expand window by adding right element
+        while (sum >= k) { // Contract window when condition met
+            minLen = Math.min(minLen, right - left + 1); // Update min length
+            sum -= arr[left++]; // Shrink window from left
         }
     }
     return (minLen == Integer.MAX_VALUE) ? 0 : minLen;
@@ -39,13 +39,13 @@ public static int atMostK(int[] arr, int k) {
     int left = 0, count = 0;
     Map<Integer, Integer> freq = new HashMap<>();
     for (int right = 0; right < arr.length; right++) {
-        freq.put(arr[right], freq.getOrDefault(arr[right], 0) + 1);
-        while (freq.size() > k) {
+        freq.put(arr[right], freq.getOrDefault(arr[right], 0) + 1); // Add to frequency map
+        while (freq.size() > k) { // Maintain at most k distinct
             freq.put(arr[left], freq.get(arr[left]) - 1);
             if (freq.get(arr[left]) == 0) freq.remove(arr[left]);
-            left++;
+            left++; // Shrink window
         }
-        count += right - left + 1;
+        count += right - left + 1; // Count valid subarrays
     }
     return count;
 }
@@ -58,17 +58,17 @@ class MonotonicQueue {
     Deque<Integer> deque = new LinkedList<>();
     public void push(int num) {
         while (!deque.isEmpty() && deque.peekLast() < num) {
-            deque.pollLast();
+            deque.pollLast(); // Maintain decreasing order
         }
         deque.addLast(num);
     }
     public void pop(int num) {
         if (!deque.isEmpty() && deque.peekFirst() == num) {
-            deque.pollFirst();
+            deque.pollFirst(); // Remove if it was the max element
         }
     }
     public int max() {
-        return deque.peekFirst();
+        return deque.peekFirst(); // Max element always at front
     }
 }
 ```
@@ -77,15 +77,17 @@ class MonotonicQueue {
 
 ```java
 class MedianFinder {
-    private PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());
-    private PriorityQueue<Integer> large = new PriorityQueue<>();
+    private PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder()); // Max heap
+    private PriorityQueue<Integer> large = new PriorityQueue<>(); // Min heap
+    
     public void addNum(int num) {
         small.add(num);
-        large.add(small.poll());
+        large.add(small.poll()); // Balance heaps
         if (small.size() < large.size()) {
-            small.add(large.poll());
+            small.add(large.poll()); // Ensure max heap has equal/more elements
         }
     }
+    
     public double findMedian() {
         return small.size() > large.size() ? small.peek() : (small.peek() + large.peek()) / 2.0;
     }
@@ -98,14 +100,13 @@ class MedianFinder {
 public static int maxArea(int[] height) {
     int left = 0, right = height.length - 1, maxArea = 0;
     while (left < right) {
-        maxArea = Math.max(maxArea, (right - left) * Math.min(height[left], height[right]));
-        if (height[left] < height[right]) left++;
+        maxArea = Math.max(maxArea, (right - left) * Math.min(height[left], height[right])); // Compute area
+        if (height[left] < height[right]) left++; // Move pointer with smaller height
         else right--;
     }
     return maxArea;
 }
 ```
-
 ## Decision Tree: Subarray Problems
 
 - **Contiguous Required?** → ❌ No → **DP (Subsequences)**
@@ -116,7 +117,7 @@ public static int maxArea(int[] height) {
 - **Condition Type?**
   - 🔸 Sum ≥, ≤, exact? → **Expand & Shrink (Two-Pointer)**
   - 🔸 Count subarrays with condition? → Move to Next
-- **AtMost(K) Trick Applicable?**
+- **AtMost(K) Trick Applicable? like asked in distinct k or atmost k odd **
   - ✅ Yes → `atMost(K) - atMost(K-1)`
   - ❌ No → **Prefix Sum + HashMap**
 
