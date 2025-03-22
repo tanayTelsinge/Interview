@@ -1,94 +1,100 @@
-Sliding window:
+# Sliding Window Template & Decision Guide
 
-Fixed window template
-
-```java
-  //template
-  public static int maxSumSubArray(int[] arr, int k) {
-        int maxSum = Integer.MIN_VALUE, windowSum = 0;
-
-        for (int i = 0; i < arr.length; i++) {
-            windowSum += arr[i]; // Expand window
-
-            if (i >= k - 1) { // When window size reaches k
-                maxSum = Math.max(maxSum, windowSum);
-                windowSum -= arr[i - (k - 1)]; // Slide window
-            }
-        }
-        return maxSum;
-    }
-```
-
-Dynamic window template
+## Fixed Window (Size K)
 
 ```java
-  public static int minSubArrayLen(int k, int[] arr) {
-        int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
-
-        for (int right = 0; right < arr.length; right++) {
-            sum += arr[right];
-
-            while (sum >= k) { // Shrink the window
-                minLen = Math.min(minLen, right - left + 1);
-                sum -= arr[left++];
-            }
+public static int maxSumSubArray(int[] arr, int k) {
+    int maxSum = Integer.MIN_VALUE, windowSum = 0;
+    for (int i = 0; i < arr.length; i++) {
+        windowSum += arr[i];
+        if (i >= k - 1) {
+            maxSum = Math.max(maxSum, windowSum);
+            windowSum -= arr[i - (k - 1)];
         }
-        return (minLen == Integer.MAX_VALUE) ? 0 : minLen;
     }
+    return maxSum;
+}
 ```
 
-# 📌 **Sliding Window vs. Prefix Sum vs. Other Approaches Decision Table**
-This guide will help you classify **subarray problems** in **FAANG-style interviews** within **2 minutes**.  
+## Dynamic Window (Variable Size)
 
----
+```java
+public static int minSubArrayLen(int k, int[] arr) {
+    int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
+    for (int right = 0; right < arr.length; right++) {
+        sum += arr[right];
+        while (sum >= k) {
+            minLen = Math.min(minLen, right - left + 1);
+            sum -= arr[left++];
+        }
+    }
+    return (minLen == Integer.MAX_VALUE) ? 0 : minLen;
+}
+```
 
-## ✅ **Step 1: Is the problem about contiguous subarrays?**
-| Question                      | Answer | Next Step |
-|--------------------------------|--------|-----------|
-| Are we looking for a subarray (contiguous elements)? | ❌ No  | Use **Dynamic Programming (DP) for subsequences** |
-|                                | ✅ Yes  | Go to Step 2 |
+## AtMost(K) Template
 
----
+```java
+public static int atMostK(int[] arr, int k) {
+    int left = 0, count = 0;
+    Map<Integer, Integer> freq = new HashMap<>();
+    for (int right = 0; right < arr.length; right++) {
+        freq.put(arr[right], freq.getOrDefault(arr[right], 0) + 1);
+        while (freq.size() > k) {
+            freq.put(arr[left], freq.get(arr[left]) - 1);
+            if (freq.get(arr[left]) == 0) freq.remove(arr[left]);
+            left++;
+        }
+        count += right - left + 1;
+    }
+    return count;
+}
+```
 
-## ✅ **Step 2: Is the window size fixed or variable?**
-| Condition                          | Answer | Approach | Example FAANG Problem |
-|------------------------------------|--------|----------|----------------------|
-| Is the subarray size `k` **given**? | ✅ Yes  | **Fixed-size Sliding Window** | [Maximum Sum Subarray of Size K (Leetcode 643)](https://leetcode.com/problems/maximum-average-subarray-i/) |
-| Does the window size **depend on a condition** (sum ≤, ≥, exact sum, at most/least `goal`)? | ✅ Yes  | **Variable-size Sliding Window (Expand & Shrink)** | [Minimum Size Subarray Sum (Leetcode 209)](https://leetcode.com/problems/minimum-size-subarray-sum/) |
-| Are we counting subarrays instead of finding one? | ✅ Yes  | **Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
+## Decision Tree: Subarray Problems
 
----
+- **Contiguous Required?**
+  - ❌ No → Use **DP (Subsequences)**
+  - ✅ Yes → Move to Next
 
-## ✅ **Step 3: Are negative numbers present?**
-| Condition                          | Answer | Approach | Example FAANG Problem |
-|------------------------------------|--------|----------|----------------------|
-| Are all numbers **non-negative**?  | ✅ Yes  | **Use Sliding Window** | [Longest Subarray of 1s After Deleting One Element (Leetcode 1493)](https://leetcode.com/problems/longest-subarray-of-1s-after-deleting-one-element/) |
-| Do numbers include **negatives**?  | ✅ Yes  | **Use Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
-| Does the problem involve **maximum subarray sum**? | ✅ Yes | **Kadane’s Algorithm** | [Maximum Subarray (Leetcode 53)](https://leetcode.com/problems/maximum-subarray/) |
+- **Fixed or Variable Size?**
+  - 🔹 Fixed (`k` given)? → **Fixed Sliding Window**
+  - 🔹 Variable (condition-based)? → Move to Next
 
----
+- **Condition Type?**
+  - 🔸 Sum ≥, ≤, exact? → **Expand & Shrink (Two-Pointer)**
+  - 🔸 Count subarrays with condition? → Move to Next
 
-## 🔹 **Final Decision Table Based on FAANG Problems**
-| **Problem Type** | **Sliding Window Type?** | **Approach** | **Example FAANG Problem** |
-|------------------|------------------|------------|----------------------|
-| Find max/min sum of **subarray of size `k`** | **Fixed-size** | **Basic sliding window** | [Max Sum of Subarray of Size K (Leetcode 643)](https://leetcode.com/problems/maximum-average-subarray-i/) |
-| Find **smallest/largest subarray** with sum ≥, ≤ `goal` | **Variable-size** | **Expand & shrink sliding window** | [Minimum Size Subarray Sum (Leetcode 209)](https://leetcode.com/problems/minimum-size-subarray-sum/) |
-| Find **number of subarrays** with sum = `goal` | ❌ No | **Prefix Sum + HashMap** | [Subarray Sum Equals K (Leetcode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) |
-| Find **longest subarray with sum ≤ goal** (Negative numbers exist) | ❌ No | **Prefix Sum + Sliding Window (TreeMap)** | [Longest Well-Performing Interval (Leetcode 1124)](https://leetcode.com/problems/longest-well-performing-interval/) |
-| Find **maximum sum of any subarray** | ❌ No | **Kadane’s Algorithm** | [Maximum Subarray (Leetcode 53)](https://leetcode.com/problems/maximum-subarray/) |
-| Find **longest substring with at most `k` distinct characters** | ✅ Yes | **Sliding Window + HashMap** | [Longest Substring with At Most K Distinct Characters (Leetcode 340)](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) |
-| Find **length of longest substring without repeating characters** | ✅ Yes | **Sliding Window + HashSet** | [Longest Substring Without Repeating Characters (Leetcode 3)](https://leetcode.com/problems/longest-substring-without-repeating-characters/) |
+- **AtMost(K) Trick Applicable?**
+  - ✅ Yes → `atMost(K) - atMost(K-1)`
+  - ❌ No → **Prefix Sum + HashMap**
 
----
+## Common Patterns & Examples
 
-## 🔥 **Google-Specific Interview Problems**
-| **Problem** | **Approach** | **Leetcode Link** |
-|------------|------------|----------------------|
-| Find subarray with given XOR | **Prefix Sum + HashMap** | [Leetcode 1442](https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/) |
-| Find max sum of subarray with at most `k` distinct numbers | **Sliding Window + HashMap** | [Leetcode 904](https://leetcode.com/problems/fruit-into-baskets/) |
-| Longest substring containing all vowels in order | **Sliding Window + HashMap** | [Leetcode 1839](https://leetcode.com/problems/longest-substring-of-all-vowels-in-order/) |
-| Number of subarrays with bounded maximum | **Sliding Window** | [Leetcode 795](https://leetcode.com/problems/number-of-subarrays-with-bounded-maximum/) |
-| Find the shortest subarray with sum at least `k` | **Deque (Monotonic Queue) + Prefix Sum** | [Leetcode 862](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) |
+| Approach                | Problem Type                          | Leetcode Link       |
+|-------------------------|-------------------------------------|---------------------|
+| Fixed Sliding Window    | Max/Min Sum of Size K               | [643](https://leetcode.com/problems/maximum-average-subarray-i/)  |
+| Expand & Shrink         | Smallest/Largest Subarray (Sum Cond)| [209](https://leetcode.com/problems/minimum-size-subarray-sum/)  |
+| Prefix Sum + HashMap    | Count Subarrays with Sum K          | [560](https://leetcode.com/problems/subarray-sum-equals-k/)  |
+| Sliding Window + HashMap| Longest Subarray ≤ K Distinct       | [340](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/)  |
+| `atMost(K) - atMost(K-1)` | Exactly K Distinct Elements      | [992](https://leetcode.com/problems/subarrays-with-k-different-integers/)  |
+| Expand & Shrink         | Max Consecutive Ones (≤K Zeros)     | [1004](https://leetcode.com/problems/max-consecutive-ones-iii/)  |
+| Two Pointers            | Subarrays with Product < K          | [713](https://leetcode.com/problems/subarray-product-less-than-k/)  |
+| Sliding Window          | Minimum Window Substring            | [76](https://leetcode.com/problems/minimum-window-substring/)  |
+
+## Why Different DS?
+
+| Structure                | Usage                                  |
+|--------------------------|---------------------------------------|
+| **HashMap**              | Count frequencies (Anagrams, Distinct) |
+| **Deque**                | Max/Min in Sliding Window (Max Sliding)|
+| **Prefix Sum + HashMap** | Subarray sum-related (Sum = K)         |
+| **Set**                  | Unique elements (Longest No Repeat)    |
+| **Heap**                 | Median in Window (Sliding Median)      |
+
+This version is **shorter**, **structured**, and keeps key insights. Let me know if you need more tweaks!
+
+
 
 ---
 
@@ -117,18 +123,3 @@ This guide will help you classify **subarray problems** in **FAANG-style intervi
 | **Number of Substrings with Exactly K Distinct Characters** | Variable | Expand & maintain count | Use `(atMost(K) - atMost(K-1))` trick | Count valid substrings | **O(N) / O(K)** | **Two-Pointer + HashMap** | Optimized counting approach |
 
 ---
-
-## 🔥 Why Use Different Data Structures?
-
-| **Data Structure** | **Why?** |
-|----------------|-------------------------------------------|
-| **Queue (LinkedList)** | Keeps order in problems like **First Negative Number** |
-| **Deque (LinkedList)** | Efficiently finds max in **Maximum in all Subarrays of K** |
-| **HashMap** | Tracks character counts in **Anagrams, Distinct Subarrays** |
-| **Set (HashSet)** | Ensures uniqueness in **Longest Substring Without Repeating** |
-| **Prefix Sum + HashMap** | Finds sum-based conditions efficiently (e.g., **Subarray Sum = K**) |
-| **Heap (Priority Queue)** | Used in **Sliding Window Median** for quick median retrieval |
-| **Two-Pointer Trick** | Optimizes **counting problems** (e.g., **Substrings with K Distinct**) |
-
----
-
