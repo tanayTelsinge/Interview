@@ -1,3 +1,10 @@
+
+##Quick Info = https://www.youtube.com/watch?v=0wPlzMU-k00 (alex sambol heap 3 min)
+
+- When to use? Alternative to sorting, instead of nlogn we get nlogk.
+
+![image](https://github.com/user-attachments/assets/f018dae4-dbd4-4d50-8e36-4c364e9cc11f)
+
 ### Min-Heap 
 ```java
 PriorityQueue<Integer> minHeap = new PriorityQueue<>();
