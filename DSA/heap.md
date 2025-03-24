@@ -174,6 +174,9 @@ public class MergeKSortedLists {
 - Use a queue to maintain cooldown.
 - Process tasks in order of frequency while maintaining cooldown.
 
+  ![image](https://github.com/user-attachments/assets/397cad2d-2a09-4438-ba27-183e15ebab25)
+
+
 ### Java Code
 ```java
 import java.util.*;
