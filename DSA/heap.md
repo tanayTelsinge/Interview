@@ -186,23 +186,21 @@ This avoids unnecessary computation of the square root.
 import java.util.*;
 
 public class KClosestPoints {
-    public int[][] kClosest(int[][] points, int k) {
-        PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
-            (a, b) -> (b[0] * b[0] + b[1] * b[1]) - (a[0] * a[0] + a[1] * a[1])
-        );
+   public int[][] kClosest(int[][] points, int k) {
+        //x^2 + y^2 => distance => add in min heap (top is closest)
+        //add point in pq -> **trick is to add sorting properly
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((p1,p2) -> (p2[0] * p2[0] + p2[1] * p2[1]) - (p1[0] * p1[0] + p1[1] * p1[1]));
 
-        for (int[] point : points) {
-            maxHeap.add(point);
-            if (maxHeap.size() > k) {
-                maxHeap.poll();
+        for(int[] point : points) {
+            minHeap.add(point);
+            if(minHeap.size() > k) {
+                minHeap.poll();
             }
+        } 
+        int[][] result = new int[k][];
+        for(int i = 0; i < k; i++) {
+            result[i] = minHeap.poll();
         }
-
-        int[][] result = new int[k][2];
-        for (int i = 0; i < k; i++) {
-            result[i] = maxHeap.poll();
-        }
-
         return result;
     }
 }
