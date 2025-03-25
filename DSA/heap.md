@@ -72,8 +72,24 @@ public class TopKFrequent {
 ## 2. Medium: K Closest Points to Origin (LC 973) - Google, Facebook
 (Asked in Meta, sometimes expects Heap solution, sometimes quick select - do both)
 
-### Problem Description  
-- Given an array of points `points[i] = [x, y]`, return the `k` closest points to `(0,0)`.
+### Problem Statement
+Given an array of points `points[i] = [xi, yi]` representing `N` points on a 2D plane, return the `K` closest points to the origin `(0,0)`.
+
+### Why Use \( x^2 + y^2 \)?
+The Euclidean distance between a point \( (x, y) \) and the origin \( (0,0) \) is:
+
+\[
+\text{distance} = \sqrt{x^2 + y^2}
+\]
+
+Since the square root function is monotonic, we can compare squared distances instead:
+
+\[
+x^2 + y^2
+\]
+
+This avoids unnecessary computation of the square root.
+
 
 ### Approach  
 - Use a **max-heap** of size `k`.
