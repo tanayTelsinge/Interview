@@ -82,11 +82,96 @@ The Euclidean distance between a point \( (x, y) \) and the origin \( (0,0) \) i
 \text{distance} = \sqrt{x^2 + y^2}
 \]
 
-Since the square root function is monotonic, we can compare squared distances instead:
+A function is monotonic if it is either always increasing or always decreasing.
 
-\[
-x^2 + y^2
-\]
+Monotonicity of the Square Root Function
+The square root function 
+𝑓
+(
+𝑥
+)
+=
+𝑥
+f(x)= 
+x
+​
+  is monotonically increasing, meaning that if 
+𝑎
+<
+𝑏
+a<b, then:
+
+𝑎
+<
+𝑏
+a
+​
+ < 
+b
+​
+ 
+This property allows us to compare squared distances directly. Since:
+
+𝑥
+2
++
+𝑦
+2
+<
+𝑥
+′
+2
++
+𝑦
+′
+2
+if and only if
+𝑥
+2
++
+𝑦
+2
+<
+𝑥
+′
+2
++
+𝑦
+′
+2
+x 
+2
+ +y 
+2
+ 
+​
+ < 
+x 
+′2
+ +y 
+′2
+ 
+​
+ if and only ifx 
+2
+ +y 
+2
+ <x 
+′2
+ +y 
+′2
+ 
+we can skip computing the square root and just compare 
+𝑥
+2
++
+𝑦
+2
+x 
+2
+ +y 
+2
+  instead.
 
 This avoids unnecessary computation of the square root.
 
