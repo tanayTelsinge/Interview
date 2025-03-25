@@ -70,6 +70,7 @@ public class TopKFrequent {
 ---
 
 ## 2. Medium: K Closest Points to Origin (LC 973) - Google, Facebook
+(Asked in Meta, sometimes expects Heap solution, sometimes quick select - do both)
 
 ### Problem Description  
 - Given an array of points `points[i] = [x, y]`, return the `k` closest points to `(0,0)`.
