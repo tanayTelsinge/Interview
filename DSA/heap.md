@@ -84,7 +84,7 @@ The Euclidean distance between a point \( (x, y) \) and the origin \( (0,0) \) i
 
 A function is monotonic if it is either always increasing or always decreasing.
 
-Monotonicity of the Square Root Function
+#### Monotonicity of the Square Root Function
 The square root function 
 𝑓
 (
