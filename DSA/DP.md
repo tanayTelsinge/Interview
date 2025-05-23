@@ -21,7 +21,7 @@ Does the problem have optimal substructure, means solution from optimal solution
 
 ### example with Climbing Stairs problem
 
--- 1st Solution - Memoization, Recursive, Top-Down
+- 1st Solution - Memoization, Recursive, Top-Down
 
 ```java
 class Solution {
@@ -44,7 +44,7 @@ class Solution {
 }
 TC - 
 ```
-
+- 2st Solution - Tabulation, Iterative, Bottom-up
 ```java
 class Solution {
     public int climbStairs(int n) {
@@ -67,7 +67,6 @@ class Solution {
 | ----------------------- | --------------------- | -------------------------------- |
 | **Time Complexity**     | O(n)                  | O(n)                             |
 | **Space Complexity**    | O(1)                  | O(n)                             |
-| **Readability**         | Simple, but iterative | Intuitive for recursion lovers   |
 | **Stack Overflow Risk** | None                  | Possible for large `n`           |
 | **Performance**         | Slightly better       | Slightly slower due to recursion |
 
