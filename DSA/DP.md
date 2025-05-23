@@ -1,3 +1,16 @@
+##  Decision Tree (When to use)
+Can the problem be divided into subproblems?
+→ No (e.g., Sorting, Max in array) → Don’t use DP
+→ Yes (e.g., Fibonacci, Knapsack) → Go to 2
+
+Are subproblems overlapping?
+→ No (e.g., Binary Search, Merge Sort) → Use Divide and Conquer
+→ Yes (e.g., Fibonacci, Coin Change) → Go to 3
+
+Does the problem have optimal substructure, means solution from optimal solution of subproblem?
+→ No (e.g., Naive Traveling Salesman) → Don’t use DP
+→ Yes (e.g., Longest Common Subsequence, 0/1 Knapsack) → Use DP!
+
 ## Two types
 1. Memoization (Top-Down, Recursion)
 2. Tabulation (Bottom-up, Loops)
