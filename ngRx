@@ -219,3 +219,56 @@ StoreModule.forRoot({ bill: billReducer }),
 EffectsModule.forRoot([BillEffects])
 
 ```
+
+RxJS and NgRx: The Connection
+NgRx is built on RxJS Observables — the state store, actions, and effects all use streams of data (Observables).
+
+Components subscribe to Observables to get state updates reactively.
+
+Actions and side-effects are processed as streams, allowing powerful operators to transform, filter, and handle asynchronous data.
+
+Key RxJS Concepts Used in NgRx
+RxJS Concept	Role in NgRx	Example Operators Used
+Observable	Stream of values (actions, state)	store.select() returns an Observable
+Subject	Special Observable to emit events	Actions stream (actions$) in Effects
+Operators	Transform/handle streams	map, mergeMap, switchMap, catchError
+Subscription	Listening to an Observable	Components subscribe to store.select()
+
+How RxJS Powers NgRx Effects
+Effects listen to the actions$ Observable stream.
+
+When a specific action is dispatched (ofType operator filters them), Effects trigger side effects like HTTP calls.
+
+The result is mapped to success/failure actions.
+
+The whole chain uses RxJS operators like:
+
+ts
+Copy
+Edit
+this.actions$.pipe(
+  ofType(loadUsers),
+  mergeMap(() => http.get('/api/users').pipe(
+    map(users => loadUsersSuccess({ users })),
+    catchError(error => of(loadUsersFailure({ error })))
+  ))
+);
+Example RxJS Operators in NgRx
+ofType() — filters action stream for specific actions
+
+mergeMap() — maps to inner Observable (e.g., HTTP call), flattens the result
+
+switchMap() — switches to new Observable, cancels previous
+
+map() — transforms emitted values
+
+catchError() — handles errors and returns fallback Observable
+
+Why RxJS?
+Asynchronous handling: easy to handle async events like HTTP calls, user inputs.
+
+Composability: complex data flows can be created with simple operators.
+
+Reactive UI updates: components react automatically to state changes.
+
+
