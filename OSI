@@ -1,0 +1,49 @@
+1. Network protocols are set of rules and standards that defines how devices communicate and exchange data over network.
+2. These protocols ensure seamless data transmission, error handling and security across different devices and systems.
+
+🧠 OSI Model for System Design (PDNTSPA)
+Please do not take see pamela anderson
+
+1️⃣ Physical Layer (L1)
+- Role: Transmits raw bits (electrical/optical)
+- Protocols: Ethernet, Fiber, Wi-Fi
+- Use: GCP Interconnect, Data center cabling, CDN edge latency
+
+2️⃣ Data Link Layer (L2)
+- Role: Node-to-node data transfer (MAC)
+- Protocols: Ethernet, ARP, VLAN
+- Use: VPC interfaces, Hybrid networking (VLAN tagging)
+
+3️⃣ Network Layer (L3)
+- Role: Routing packets across networks
+- Protocols: IP, ICMP, BGP
+- Use: VPC routing, Cloud Router (BGP), ICMP (ping/debug)
+
+4️⃣ Transport Layer (L4)
+- Role: Reliable delivery, ports, sessions
+- Protocols: TCP (reliable), UDP (fast), QUIC (HTTP/3)
+- Use: APIs (TCP), DNS/VoIP (UDP), Mobile web (QUIC)
+
+5️⃣ Session Layer (L5)
+- Role: Session control, handshake
+- Protocols: TLS, gRPC
+- Use: TLS termination at LB, secure RPC between services
+
+6️⃣ Presentation Layer (L6)
+- Role: Data format, encryption, compression
+- Protocols: JSON, Protobuf, TLS, GZIP
+- Use: REST/gRPC payloads, secure APIs, bandwidth savings
+
+7️⃣ Application Layer (L7)
+- Role: Application-level protocols
+- Protocols: HTTP(S), WebSocket, DNS, SMTP, gRPC, MQTT
+- Use: Web apps (HTTP), Real-time chat (WebSocket), IoT (MQTT), API gateways (gRPC)
+
+✅ GCP Examples:
+- L3: Cloud Router with BGP
+- L4: TCP LB or QUIC via HTTP/3
+- L7: Cloud Run with gRPC, Cloud Functions (HTTPS)
+- L2-L3: Partner Interconnect with VLANs & BGP
+
+📝 Tip: Choose protocols by latency, reliability, and security trade-offs.
+
