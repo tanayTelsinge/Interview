@@ -1,0 +1,165 @@
+Why main method is public static?
+- JRE needs to access main method, as its entry point, if its private, it can't access.
+- When program starts, there is not any object of class available to the main method, hence static.
+
+Can we overwrite main method?
+- We can overwrite, but it hides original.
+
+Serialized data?
+Process of converting an object state to some format.
+
+Why shouldn't we serialize in text file?
+Serialize is in binary format, text is for reading, hence it can non-readable and encoding issues.
+More practical to convert to .bin format.
+More better to serialize in json first.
+
+What if serializable class has member which is not serializable?
+It throws NonSerializableException when we try to serializable. (Object is serializable when all its members can be serialized).
+To resolve, 
+1. Make member transient (to ignore). CAN be used for sensitive info.
+2. Make custom Serializer.
+
+How Garbage Collection works in Java?
+When object no longer references memory, GB frees it.
+
+How can we manually handle memory?
+
+Role of finalize?
+called by GC, give chance to manually free memory before GC. such as closing filestream or closing network connection.
+
+How memory leaks occurs if we have GC?
+IF object are held unintentionally held in memory.
+Happens if object is referenced by static field
+Object stored in collection.
+Not registering callback can keep alive.
+
+Diff bw young generation and old generation memory space?
+
+
+How to ensure quality and mantainability?
+Regular code reviews.
+Write unit test cases.
+Integration tests.
+Code coverage.
+Clean code.
+
+SB application slower in prod than dev?
+-Monitor
+-External services affecting prod.
+
+How will u integrate relational DB in spring boot application?
+- Add dependency in pom.
+- Add application.properties / yml set credentials.
+- Repo (JPA).
+
+Modify existing Spring boot application to accomodate in Serverless architecture?
+- break down monolith to independent services.
+- add docker yml files to containerize.
+- select serverless platform.
+- Configure event triggers and runtime params.
+- Data storage.
+- Monitoring.
+
+How SB makes decision which server to use?
+- Based on Classpath dependencies. (if tomcat, jetty is present takes it or default to tomcat, as it included in spring starter web).
+
+How will u handle exceptions in SB rest app?
+Identify types of exception that will occur. (CustomException or build in ones eg. NPE).
+Create a CustomException class for custom exception
+Utilize @ControllerAdvice to create dedicated class for GlobalException handling, define method with @ExceptionHandler, each handling specific exceptions, these will 
+return meaningful exceptions with appropriate http status and error message.
+
+How to handle multiple beans of same type?
+1. Use @Qualifier annotation.
+It lets us decide which bean to inject if multiple available.
+eg. multiple beans of type DataSource, we can each give name and Qualifier.
+2. Use @Primary annotation. it will keep it default choice.
+
+What is Aspect Oriented Programming? 
+- Programming approach, to seperate cross-cutting concerns from core logic.
+eg. Logging, security checks.
+- Eg. In java we want to log after each methods, instead of putting logging in each method, we can define in aspect and specify when and where to execute it.
+
+Need of @AutoConfiguration?
+
+
+How do we configure multiple env in Spring boot app?
+- Multiple ways but common solution is Spring profiles.
+
+1. Profile-Specific Property Files and select profile via cmd line or docker.(Basic Approach)
+src/main/resources/
+├── application.yml  (common settings)
+├── application-dev.yml
+├── application-prod.yml
+
+Activate profile using:
+spring.profiles.active=prod from cmd line or docker
+eg. 
+java -jar myapp.jar --spring.profiles.active=prod
+docker run -e SPRING_PROFILES_ACTIVE=prod myapp
+
+2. Spring Cloud Config Server (Best for Microservices) - seperate spring cloud server containing profile specific files, and no need for each microservice having those files.
+Centralized externalized configuration in Git, database, or Vault.
+
+Store myservice-dev.yml, myservice-prod.yml in a Git repo.
+Create a Spring Cloud Config Server to serve configs.
+Microservices fetch configs from http://config-server/myservice/dev.
+
+Activate profile via
+spring:
+  cloud:
+    config:
+      uri: http://config-server
+  profiles:
+    active: dev
+
+
+What is @Profile and @Value?
+@Profile is used to define environment specific beans.
+eg.
+@Configuration
+@Profile("dev")
+public class DevConfig {
+    @Bean
+    public DataSource devDataSource() {
+        return new DataSource("jdbc:mysql://localhost/dev");
+    }
+}
+@Value is used to access property values from application.properties or yml.
+
+ResponseEntity - why use it and without it what?
+What? A wrapper class over HttpResponse.
+Has Status code, header, Body (json data, error msg).
+When to Use ResponseEntity?
+We need more flexibility.
+1. add custom headers.
+2. error handling more effectively.
+
+Scenario	            Without ResponseEntity	  With ResponseEntity
+Simple JSON response	✅ Works	              ✅ Works
+Custom HTTP status codes	❌ Not possible    	✅ Yes
+Custom headers	      ❌ No control          	✅ Yes
+Error handling (404, 500, etc.)	❌ Returns 200 even if data is missing	✅ Proper status codes
+
+
+gradle clean vs gradle install?
+gradle clean -> remove all build outputs. eg. compiled classes, reports,  JAR, cleans up /build folder.
+gradle install -> compiles source code,   run tests, package the code in JAR/WAR and creates a deployable/executable artifact in /build folder.
+
+gradle lifecycle:
+Initialization Phase
+
+Identifies the projects involved in the build (useful for multi-module projects).
+Loads settings.gradle to configure project structure.
+Configuration Phase
+
+Reads and configures build.gradle.
+Creates a task execution plan but does not run tasks yet.
+Execution Phase
+
+Executes only the requested tasks and their dependencies.
+Runs tasks in a dependency-based order for efficiency.
+
+
+
+
