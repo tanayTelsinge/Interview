@@ -8,4 +8,5 @@ Async way:
 
 = But in future, get() is blocking, i.e. main thread will wait here.
 
-= Completablefuture, join is blocking.
+= Completablefuture, normally non blocking, but if u use get() or join() blocking there.
+- Main adv, chaining, exception handling using exceptionally.
