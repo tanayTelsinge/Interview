@@ -1,0 +1,38 @@
+body {
+    font-family: 'Helvetica';
+    font-size: 16px;
+    text-align: center;
+}
+
+.container {
+    margin: 20px;
+    padding : 20px;
+    border: solid #ccc;
+    border-radius: 20px;
+}
+
+div {
+    margin: 20px;
+    padding : 20px;
+    border:  #ccc;
+    border-radius: 20px;
+}
+
+input {
+    border-color:  #ccc;
+    border-radius: 4px;
+    border-width: thin;
+    font-size: 16px;
+    text-align: center;
+}
+
+input[type='number'], input[type='text'] {
+    width: 40px;
+    height: 30px;
+
+}
+
+.heading {
+    text-align: center;
+    font-size: 30px;
+}
