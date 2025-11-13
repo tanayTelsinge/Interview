@@ -1,0 +1,17 @@
+{
+  "name": "react",
+  "dependencies": {
+    "scheduler": "^0.23.0",
+    "loose-envify": "^1.4.0"
+  },
+  "packages": {
+    "scheduler": {
+      "dependencies": {
+        "loose-envify": "^1.4.0"
+      }
+    },
+    "loose-envify": {
+      "dependencies": {}
+    }
+  }
+}

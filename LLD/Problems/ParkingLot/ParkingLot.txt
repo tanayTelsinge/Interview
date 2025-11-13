@@ -1,0 +1,57 @@
+- Rough Flow
+Vehicle -> Entrance -> Ticket -> Park -> Payment -> Exit 
+
+- Requirement Gathering
+1. How many entrances and exits are there?
+2. Are there different types of vehicles (car, bike, truck)?
+3. Is there a time limit for parking?
+4. What payment methods are accepted?
+5. Type of parking spots?
+
+- Objects and Classes
+1. Vehicle 
+    Properties:
+    -  vehicle number
+    -  vehicle type (enum: TWO_WHEELER, FOUR_WHEELER)
+    Behaviour: getVehicleDetails()
+2. Ticket
+    Properties:
+    -  ticket id
+    -  vehicle details
+    -  entry time
+    -  exit time
+    -  parking spot assigned
+    Behaviour: generateTicket(), closeTicket()
+3. ParkingSpot
+    Properties:
+    -  spot id
+    -  vehicle
+    -  spot type (enum: TWO_WHEELER, FOUR_WHEELER)
+    -  spot status (enum: AVAILABLE, OCCUPIED)
+    Behaviour: isAvailable(), parkVehicle(), removeVehicle()
+5. Entrance Gate
+    Properties:
+    -  gate id
+    -  gate status (enum: OPEN, CLOSED)
+    -  list of tickets issued
+    -  method to issue ticket
+    Behaviour: openGate(), closeGate(), issueTicket(), findAvailableSpot(), updateSpotStatus()
+6. Exit Gate
+    Properties:
+    -  gate id
+    -  gate status (enum: OPEN, CLOSED)
+    -  method to process payment
+    Behaviour: openGate(), closeGate(), processPayment()
+7. Payment
+    Properties:
+    -  payment id
+    -  payment method (enum: CASH, CARD, UPI)
+    -  amount
+    Behaviour: processPayment()
+8. ParkingSpotManager
+    Properties:
+    -  list of parking spots
+    Behaviour: findAvailableSpot(), addSpot(), removeSpot(), parkVehicle(), removeVehicle()
+
+
+

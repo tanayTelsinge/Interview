@@ -70,3 +70,6 @@ class Solution {
 | **Stack Overflow Risk** | None                  | Possible for large `n`           |
 | **Performance**         | Slightly better       | Slightly slower due to recursion |
 
+
+### Longest Increasing Subsequence (LIS)
+
