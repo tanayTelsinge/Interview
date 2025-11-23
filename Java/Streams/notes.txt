@@ -1,0 +1,183 @@
+- If string is given, 2 options.
+1. str.chars().mapToObj(c -> (char)c) - (returns IntStream)
+2. Arrays.stream(str.split("")) - (returns Stream<String>)
+
+- find related methods like findFirst, findAny, etc. return Optional type.
+
+- To convert Stream back to String, use Collectors.joining()
+  Example: 
+    String result = stream.collect(Collectors.joining());
+
+- Collectors.groupingBy() takes 3 parameters:
+  1. Classifier function - how to group elements eg. Function::identity, Person::getAge etc.
+  3. Downstream collector (optional) - how to collect grouped elements eg. Collectors.toList(), Collectors.counting() etc.
+  2. Supplier for Map (optional) - which Map implementation to use eg. HashMap::new, TreeMap::new, LinkedHashMap::new etc.
+
+ - Grouping by Always returns a Map<K, V> where K is the type returned by classifier function and V is the type returned by downstream collector.
+
+    Example:
+        Map<Integer, List<Person>> groupedByAge = people.stream()
+            .collect(Collectors.groupingBy(Person::getAge));
+    
+        Map<Integer, Long> countByAge = people.stream()
+            .collect(Collectors.groupingBy(Person::getAge, Collectors.counting()));
+    
+        Map<Integer, List<Person>> linkedHashMapByAge = people.stream()
+            .collect(Collectors.groupingBy(Person::getAge, LinkedHashMap::new, Collectors.toList()));
+
+- The max, min, sort methods can take Comparator as parameter. Max and min return Optional type.
+eg. 
+    Optional<Person> oldest = people.stream()
+        .max(Comparator.comparing(Person::getAge));
+    
+    List<Person> sortedByName = people.stream()
+        .sorted(Comparator.comparing(Person::getName))
+        .collect(Collectors.toList());
+
+- To convert Stream of Wrapper types to primitive types, use mapToInt, mapToLong, mapToDouble methods.
+  Example:
+    IntStream ages = people.stream()
+        .mapToInt(Person::getAge);
+
+- To convert primitive streams back to Stream of Wrapper types, use boxed() method.
+    Example:
+        Stream<Integer> ageStream = ages.boxed();
+
+- collectingAndThen() method of Collectors is used to perform a final transformation on the result of a collector.
+  It takes two parameters:
+    1. The collector to apply
+    2. A finishing function to apply to the result of the collector - 
+         This function takes the result of the collector as input and produces a final result.
+
+  Example:
+    List<String> names = people.stream()
+        .collect(Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> {
+                Collections.sort(list);
+                return list;
+            }
+        ));
+
+- flatMap() method is used to flatten nested structures.
+    Example:
+        List<List<String>> nestedList = Arrays.asList(
+            Arrays.asList("a", "b"),
+            Arrays.asList("c", "d"),
+            Arrays.asList("e", "f")
+        );
+    
+        List<String> flatList = nestedList.stream()
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+- To create an unmodifiable list from a stream, use Collectors.toUnmodifiableList()
+    Example:
+        List<String> unmodifiableList = stream.collect(Collectors.toUnmodifiableList());
+
+
+- Intstream range() and rangeClosed() methods:
+    1. range(start, end) - generates numbers from start (inclusive) to end (exclusive)
+    2. rangeClosed(start, end) - generates numbers from start (inclusive) to end (inclusive)
+
+- Example:
+        IntStream rangeStream = IntStream.range(1, 5); // 1, 2, 3, 4
+        IntStream rangeClosedStream = IntStream.rangeClosed(1, 5); // 1, 2, 3, 4, 5
+
+- collectors.summarizingInt(), summarizingLong(), summarizingDouble() methods:
+    These methods return an IntSummaryStatistics, LongSummaryStatistics, or DoubleSummaryStatistics object respectively,
+    which contains count, sum, min, average, and max of the elements in the stream.
+
+    Example:
+        IntSummaryStatistics stats = people.stream()
+            .collect(Collectors.summarizingInt(Person::getAge));
+        
+        long count = stats.getCount();
+        int sum = stats.getSum();
+        int min = stats.getMin();
+        int max = stats.getMax();
+        double average = stats.getAverage();
+
+- Collectors.partitioningBy() method:
+    This method is used to partition the elements of a stream into two groups based on a predicate.
+    It returns a Map<Boolean, List<T>>, where the key true contains elements that match the predicate,
+    and the key false contains elements that do not match the predicate.
+
+    Example:
+        Map<Boolean, List<Person>> partitionedByAdult = people.stream()
+            .collect(Collectors.partitioningBy(person -> person.getAge() >= 18));
+
+- To create a Stream from a Collection, use collection.stream() method.
+- To create a Stream from an array, use Arrays.stream(array) method.
+- To create a Stream from individual values, use Stream.of(value1, value2, ...) method.
+- To convert Stream of Wrapper types to primitive types, use mapToInt, mapToLong, mapToDouble methods.
+  Example:
+    IntStream ages = people.stream()
+        .mapToInt(Person::getAge);
+- To convert primitive streams back to Stream of Wrapper types, use boxed() method.
+    Example:
+        Stream<Integer> ageStream = ages.boxed();
+
+- Example of using reduce() method:
+    Optional<Integer> sum = numbers.stream()
+        .reduce((a, b) -> a + b);
+    
+    Integer product = numbers.stream()
+        .reduce(1, (a, b) -> a * b);
+
+- collectors.toMap() method:
+    This method is used to collect elements of a stream into a Map.
+    It takes two mandatory parameters: a key mapper function and a value mapper function.
+    It also has optional parameters for merge function and map supplier.
+
+    Example:
+        Map<Integer, String> idToNameMap = people.stream()
+            .collect(Collectors.toMap(
+                Person::getId,
+                Person::getName
+            ));
+        
+        // With merge function to handle duplicate keys
+        Map<Integer, String> idToNameMapWithMerge = people.stream()
+            .collect(Collectors.toMap(
+                Person::getId,
+                Person::getName,
+                (name1, name2) -> name1 + ", " + name2
+            ));
+        
+        // With map supplier to specify the type of Map
+        Map<Integer, String> linkedHashMap = people.stream()
+            .collect(Collectors.toMap(
+                Person::getId,
+                Person::getName,
+                (name1, name2) -> name1,
+                LinkedHashMap::new
+            ));
+
+- collectors.averaging methods:
+    These methods are used to calculate the average of numeric values in a stream.
+    There are three variants: averagingInt(), averagingLong(), and averagingDouble().
+
+    Example:
+        double averageAge = people.stream()
+            .collect(Collectors.averagingInt(Person::getAge));
+        
+        double averageSalary = employees.stream()
+            .collect(Collectors.averagingDouble(Employee::getSalary));
+            
+- collectors.teeing() method:
+    This method is used to perform two different collectors on the same stream and then merge their results.
+    It takes three parameters: two collectors and a merger function.
+
+    Example:
+        Map<String, Double> averageAndTotalSalary = employees.stream()
+            .collect(Collectors.teeing(
+                Collectors.averagingDouble(Employee::getSalary),
+                Collectors.summingDouble(Employee::getSalary),
+                (avg, sum) -> {
+                    Map<String, Double> result = new HashMap<>();
+                    result.put("average", avg);
+                    result.put("total", sum);
+                    return result;
+                }
+            ));
