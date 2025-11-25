@@ -14,7 +14,8 @@ public class StringFrequency {
         .stream(s.split(" "))
         .collect(
             Collectors.groupingBy(
-                Function.identity()
+                Function.identity(),
+                Collectors.counting()
             )
         );
 
