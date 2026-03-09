@@ -2,6 +2,7 @@ package Streams;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,5 +45,20 @@ public class FirstNonRepeatingCharacter {
         //if index of (first) and last index is same, single occurence.
 
         System.out.println(ans3.get());
+
+        String s4 = "stress";
+
+        var ans4 = s4.chars()
+                     .mapToObj(c -> (char) c)
+                     .collect(
+                        Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting())
+                    ).entrySet()
+                    .stream()
+                    .filter(e -> e.getValue() == 1)
+                    .findFirst()
+                    .get()
+                    .getKey();
+
+        System.out.println("sa " + ans4);
     }
 }

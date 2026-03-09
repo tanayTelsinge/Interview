@@ -1,0 +1,104 @@
+- Coding round
+
+1. int[] arr = {1, 2, 3, 4, 4}; //arr with only one duplicate element, find the duplicate element
+- used set and !set.add() to find the duplicate element
+
+2. String sentence = "hello world java"
+- Give camel case output and start with # "#HelloWorldJava"
+
+- Did not solve 
+
+Good 
+- Interview round
+- Intro
+- volatile and @Transient
+- Type of IOC Containers
+- Thread, ExecutorService what is it?
+- Type of Dependency Injection
+
+Bad - Coding round
+
+1. Code 1
+```
+class Vehicle {
+    public static getType() {
+        return "Vehicle";
+    }
+}
+
+class Car extends Vehicle {
+    public static getType() {
+        return "Car";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle v = new Car();
+        System.out.println(v.getType());
+    }
+}
+```
+-Q1. What will be the output of the above code and why?
+-Q2. If we make method getType() non-static, then what will be the output and why?
+-Q3. If we make method getType() non-static and also add @Override annotation in Car class, then what will be the output and why?
+-Q4. If we make Car method protected, then what will be the output and why?
+
+I said for Q1. "Car"
+for Q2. "Car"
+for Q3. "Car"
+for Q4. "Car"
+2. Code 2
+```
+class Test {
+    @Autowired
+    private B b;
+}
+
+@Component
+class B {
+
+}
+
+@Configuration
+class AppConfig {
+    @Bean
+    public B b() {
+        return new B();
+    }
+}
+```
+-Q1. In the above code, will the dependency injection work? If yes, then how? If no, then why not?
+- I said we need to use @Qualifier, 
+
+@Autowired
+@Qualifier("b")
+private B b;
+
+Also we need to add some annotation over @Component and @Configuration 
+with @...("b") and @...("appConfig") respectively.
+
+- We have List<Order> orders, each order has List<Item> items, each item has price and quantity. Find the total price of all orders. Use only one stream pipeline to solve this problem.
+
+- My answer
+```
+ orders.stream().map(e -> e.getItems())
+ .collect(Collectors.groupingBy(Item::getCategory(), Collectors.summingDouble(Item::getPrice)));
+3. Code 3
+```
+public class Main {
+    public static void main(String[] args) {
+      List<String> list = new ArrayList<>();
+      list.add("Test");
+
+      int a = 10;
+      a = 4;
+
+      list.stream().filter(s -> s.length() == a).toList();
+    }
+}
+```
+-Q1. Will the above code compile? If yes, then what will be the output? If no, then why not?
+
+- My answer it will compile.
+
