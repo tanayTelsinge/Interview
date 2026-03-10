@@ -1,0 +1,32 @@
+- Merge intervals coding que.
+- 4 diff level of testing, explain? - Acceptance, System,    Integration, Unit testing.
+- Diff between @Before, @BeforeEach, @After, @AfterEach, @BeforeAll, @AfterAll.
+- Diff Junit 4 and Junit 5.
+- What is @ParameterizedTest, @ValueSource, @CsvSource, @MethodSource.
+- What is indexing and what to do if indexing becomes slow while 
+processing millions of records in a database?
+- What if we index all the columns in a database, will it improve the performance of all queries?
+- What is the difference between clustered and non-clustered index?
+- What is virtual table in SQL?
+- For HashMap, if hash collision occurs for for all elements, what will be the time complexity for get and put operations?
+- Synchronized vs Lock, which one is better and why?
+- SOLID principles, explain each one with an example.
+- Which version of Spring framework have u used and what are the new features in that version? eg. 3 which min Java version supported.
+- Why jakarta came if javax was already there?
+- use of Spring JPA?
+- Lazy vs Eager Initialization in Spring, explain with example.
+- Singleton in multithreaded environment, how to implement it?
+- How will validate Request and handle custom exceptions in Spring Boot?
+- Types of dependency injection in Spring, explain with example.
+- What is DispatcherServlet in Spring MVC and how does it work?
+- What are stereotype annotations in Spring? Can we replace @Component with @Service or @Repository? Explain the differences.
+- What is spring-boot-starter-parent and how does it help in managing dependencies in a Spring Boot application?
+- Diff bw JPA, Paging, Sorting and CRUD repository in Spring Data JPA.
+- How to make custom Immutable class in Java?
+- Scopes in Spring boot.
+- Design Patterns.
+- SAGA what and why?
+- Advantages of monolithic app.
+- Have u used Kibana and do u you trace logs in Microservices?
+- What is circuit breaker pattern and how does it work in microservices architecture?, what is half open open and close state in circuit breaker pattern?
+- If one cart is having many books, Customer can buy many books, and one book can be in many carts, what type of relationship is this in database design? Hibernate mapping create class for this relationship.
