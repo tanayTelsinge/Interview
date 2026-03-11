@@ -1,0 +1,18 @@
+{
+    "java.project.sourcePaths": [
+        ".",
+        "interview_exp\\cresults\\solution_practice",
+        "Java",
+        "Java\\Async",
+        "LLD"
+    ],
+    "java.project.referencedLibraries": [],
+    "java.compile.nullAnalysis.mode": "disabled",
+      "java.configuration.runtimes": [
+          {
+              "name": "JavaSE-25",
+              "path": "C:/Program Files/Eclipse Adoptium/jdk-25.0.2.10-hotspot",
+              "default": true
+          }
+      ]
+}
