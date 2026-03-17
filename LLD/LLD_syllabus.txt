@@ -1,0 +1,388 @@
+====================================================
+  LOW LEVEL DESIGN (LLD) - INTERVIEW PREPARATION SYLLABUS
+  (Optimized for Senior Java Engineers targeting FAANG & Indian Unicorns)
+====================================================
+
+KEY INSIGHT: FAANG vs Indian Unicorns are DIFFERENT formats.
+  - FAANG (Google, Amazon, Meta): 45-60 min OOD, class diagrams + skeleton code, design thinking focus
+  - Indian Unicorns (Flipkart, Swiggy, Razorpay, PhonePe, CRED, Groww, Zepto):
+    90-120 min machine coding, FULLY WORKING runnable Java code, code demo with test inputs
+    Flipkart: 2hr (15min req + 90min code + 15min demo), Razorpay/PhonePe: 60min
+
+====================================================
+  WHAT INTERVIEWERS ACTUALLY EVALUATE (Senior Bar)
+====================================================
+  HIRE signals:
+    - Clear problem decomposition, entities with well-defined responsibilities
+    - Loose coupling between components
+    - Appropriate (NOT forced) use of design patterns
+    - Proactive edge case identification without prompting
+    - Handles "what if we add X?" gracefully
+
+  NO-HIRE signals:
+    - Over-engineering (patterns without justification)
+    - God classes doing everything
+    - Starting to code without clarifying requirements
+    - Ignoring concurrency in systems that clearly need it
+    - if/else cascades or instanceof checks (OCP violations)
+
+====================================================
+  1. OOP FUNDAMENTALS & CRITICAL TRAPS
+====================================================
+  Core: Encapsulation, Abstraction, Inheritance, Polymorphism
+  Java-specific: abstract class vs interface decisions
+
+  COMPOSITION vs INHERITANCE (most important decision per problem):
+    - Default rule: FAVOR COMPOSITION — swap at runtime, avoids fragile base class problem
+    - Use inheritance ONLY for genuine IS-A with shared stable implementation
+    - TRAP: Car extends Engine → WRONG. Car has-a Engine (constructor-injected) → CORRECT
+
+  Abstract Class vs Interface:
+    - Start with interface (more flexible)
+    - Add abstract class if shared implementation is needed
+    - Pattern: List (interface) → AbstractList (skeletal) → ArrayList (concrete)
+    - Use abstract class for: shared state (instance variables), Template Method pattern
+    - Use interface for: capability contracts (Drawable, Serializable), multiple inheritance
+
+  OOP Traps that catch senior candidates:
+    1. Bird-Penguin trap: Penguin extends Bird with fly() throwing exception → LSP violation
+       Fix: FlyingBird interface, only flying birds implement it
+    2. Rectangle-Square problem: Square extends Rectangle, setWidth breaks invariants → ISP fix
+    3. Encapsulation violations:
+       - Returning mutable collections → fix: Collections.unmodifiableList() or defensive copy
+       - Law of Demeter: order.getCustomer().getAddress().getZip() → fix: order.getShippingZip()
+    4. Diamond problem: two interfaces with same default method → class must override explicitly (A.super.hello())
+
+====================================================
+  2. SOLID PRINCIPLES (tested implicitly via design problems)
+====================================================
+  NOTE: Senior interviewers NEVER ask "What is SRP?" directly. They give a problem
+  and evaluate whether you NATURALLY apply SOLID. Balance SOLID with KISS/YAGNI.
+
+  S - Single Responsibility Principle
+    - BookingService shouldn't also handle payment, notification, and cancellation
+    - Fix: separate classes with clear delegation
+    - Test: "what if fee calculation changes?" → if it touches a God class, SRP violated
+
+  O - Open/Closed Principle  [MOST DIRECTLY TIED TO PATTERNS]
+    - Extensibility probe: "add a new payment method/vehicle type/notification channel"
+    - WRONG: modify existing class
+    - RIGHT: PaymentMethod interface + CreditCardPayment, UPIPayment implementations → add CryptoPayment = 0 change to existing
+    - Red flags: if/else cascades, instanceof checks = OCP violations in disguise
+
+  L - Liskov Substitution Principle
+    - Subclass must be substitutable for parent without breaking behavior
+    - Violations: Penguin.fly() throws exception, ElectricVehicle.refuel() from Vehicle
+    - Fix: ISP — create FlyingBird interface, only flying birds implement it
+
+  I - Interface Segregation Principle
+    - Worker interface with work(), eat(), sleep() forces Robot to implement empty eat/sleep
+    - Fix: role-based interfaces — Workable, Feedable, Restable
+    - Don't over-split: aim for COHESIVE, role-based interfaces (not one-method-per-interface)
+
+  D - Dependency Inversion Principle
+    - NEVER: new ConcreteClass() inside service classes
+    - NEVER: ParkingLotService creates new InMemoryDatabase()
+    - FIX: program to interfaces, constructor injection
+    - Spring Boot: @Autowired constructor injection of interface types
+
+====================================================
+  3. DESIGN PATTERNS — RANKED BY INTERVIEW FREQUENCY
+====================================================
+
+  TIER 1 (appears in nearly every LLD interview — know cold):
+  -------------------------------------------------------
+  Strategy        [#1 most tested]
+    - Eliminates conditionals by encapsulating algorithms behind interface
+    - ParkingStrategy (nearest/cheapest), PaymentMethod (Credit/UPI/Wallet)
+    - Spring Boot: inject via @Qualifier or Map<String, PricingStrategy>
+    - Senior signal: "this follows OCP — new algorithms = new classes, zero modification"
+
+  Observer        [#2]
+    - "When X changes, notify Y, Z, W" → stock tickers, notifications, order status
+    - Spring Boot idiom: ApplicationEventPublisher + @EventListener (don't roll your own)
+    - Pitfalls: memory leaks (unsubscribe!), ConcurrentModificationException during notification
+    - Fix: CopyOnWriteArrayList for subscriber list
+
+  Factory Method  [#3]
+    - "Support different types of X" (notifications, vehicles, accounts)
+    - Simple Factory (static method) is usually what interviews expect — not full GoF
+    - Spring Boot: BeanFactory, ApplicationContext are factory implementations
+
+  Singleton       [#4 — primarily tested as thread-safety discussion]
+    - 5 approaches ranked: Enum (JVM-guaranteed, Bloch recommended) > Inner Static Class
+      (lazy+safe via class loading) > Double-Checked Locking (needs volatile!) >
+      Eager Initialization > Synchronized getInstance() (safe but slow)
+    - Spring Boot: singleton scope is default — IoC manages lifecycle, avoid programmatic singletons
+
+  TIER 2 (frequently tested — practice these well):
+  -------------------------------------------------
+  State
+    - Vending machines, order workflows, traffic lights, ATM
+    - Each state = a class implementing common interface; Context delegates to current State
+    - SENIOR APPROACH: draw state transition diagram FIRST — that diagram IS the design
+    - Define invalid transitions explicitly (throw/log), don't silently ignore
+
+  Builder
+    - Complex objects with many optional parameters (telescoping constructor problem)
+    - Implementation: private outer constructor, validate in build(), return immutable object
+    - Lombok @Builder generates this automatically
+    - Only for genuinely complex objects — Builder for 2-3 fields = over-engineering
+
+  Decorator
+    - Dynamic behavior composition without subclass explosion
+    - Classic Java: BufferedReader(new InputStreamReader(new FileInputStream()))
+    - Spring Boot: AOP proxies — @Transactional, @Cacheable, @Async are decorators
+
+  Composite
+    - Tree structures: file systems, org charts
+    - Enables treating leaf and composite objects uniformly
+
+  Command
+    - Undo/redo systems, task queues, transaction logs
+
+  TIER 3 (conceptual understanding only):
+  ----------------------------------------
+  Chain of Responsibility, Adapter, Facade, Template Method, Proxy, Iterator, Mediator, Memento, Prototype, Flyweight, Bridge
+
+  COMMON PATTERN COMBINATIONS (appear in interview problems):
+    - Strategy + Factory: Factory creates the right Strategy based on input
+    - Strategy + Observer: Strategy for algorithms, Observer for notifications
+    - State + Observer: State manages transitions, Observer notifies of changes
+    - Composite + Iterator: tree structure + traversal
+
+  CRITICAL TIP: Name the pattern AFTER designing, NOT before.
+    - Design cleanly first, then say "this is essentially the Strategy pattern"
+    - Indian interviewers ask for pattern names explicitly
+    - US/FAANG interviewers evaluate design quality without requiring pattern names
+
+====================================================
+  4. CONCURRENCY IN LLD (Critical for Senior Bar)
+====================================================
+  Concurrency shows up in two ways:
+    1. Classic problem gets concurrent extension ("what if 2 users book same seat?")
+    2. Problem is inherently concurrent (rate limiter, thread pool, scheduler)
+  For fintech companies: ESPECIALLY CRITICAL (payments, wallet, inventory = shared mutable state)
+
+  Thread-safe Singleton (most common concurrency question):
+    Enum > Inner Static Class > Double-Checked Locking (needs volatile!) > Eager > Synchronized
+
+  Synchronization primitives (know the progression):
+    - synchronized: simplest, monitor-based, no tryLock, no fairness
+    - ReentrantLock: tryLock() with timeout, lockInterruptibly(), fairness policy
+      → ALWAYS use in try-finally blocks
+    - ReentrantReadWriteLock: separate read/write locks for read-heavy (caches)
+      → multiple readers can proceed when no writer holds the lock
+    - StampedLock (Java 8+): optimistic reads, NOT reentrant, max read throughput
+    - AtomicInteger: lock-free CAS operations for counters
+
+  Concurrent collections mapped to LLD patterns:
+    - ConcurrentHashMap: caches and registries (lock striping, thread-safe reads)
+    - BlockingQueue: producer-consumer handoff (put()/take() blocking semantics) → message queues, task schedulers
+    - CopyOnWriteArrayList: Observer subscriber lists (safe iteration, expensive writes)
+    - AtomicInteger: counters (available parking spots, rate limiter tokens)
+
+  LLD problems requiring concurrency:
+    - Parking Lot: AtomicInteger for spot counts
+    - Movie Ticket Booking: seat reservation races → optimistic locking
+    - Rate Limiter: token bucket with AtomicInteger
+    - Task Scheduler: ScheduledThreadPoolExecutor + PriorityBlockingQueue
+    - Payment/Inventory: optimistic locking, double-entry bookkeeping
+
+  PROACTIVELY identify shared mutable state and discuss thread safety even when not asked.
+  This is the senior signal interviewers look for.
+
+====================================================
+  5. UML & CLASS DIAGRAMS
+====================================================
+  - Association, Aggregation, Composition
+  - Inheritance & Realization (interface)
+  - Multiplicity and Cardinality
+  - Draw state transition diagrams for State-heavy problems (vending machine, elevator)
+
+====================================================
+  6. DB SCHEMA & API DESIGN (Required for Indian Unicorns SDE-2+)
+====================================================
+  DB Schema (Flipkart, Swiggy, Groww expect this):
+    - Derive tables from class design (ORM-driven)
+    - Normalize to 3NF, discuss denormalization trade-offs for read-heavy
+    - Index on WHERE/JOIN/ORDER BY columns; composite indexes for multi-column queries
+    - Trade-off: indexes speed reads, slow writes
+    - Fintech: double-entry bookkeeping schema (debit + credit ledger entry per transaction)
+
+  API Design (fintech roles):
+    - Idempotency: client-generated idempotency keys + DB UNIQUE constraint on (client_id, idempotency_key)
+      Flow: check key → exists? return cached → else: create IN_PROGRESS → process → SUCCESS/FAILED
+    - Stripe API: gold standard for structured error responses (app-specific codes, request IDs, field-level details)
+    - Cursor-based pagination over offset-based for large datasets
+    - URI versioning: /v1/users
+
+====================================================
+  7. COMPANY-SPECIFIC PROBLEMS (2023-2025 confirmed)
+====================================================
+  Razorpay:     In-memory Search Engine [MOST REPEATED], In-memory SQL-like DB,
+                Survey Management Service, Parking Lot
+  Flipkart:     Online Auction/SuperBidder (highest-unique-bid-wins) [MOST REPEATED, SDE-2/3],
+                Conference Room Booking, Digital Wallet (FkRupee), Ride-Sharing
+  Swiggy:       Splitwise/Expense Management [MOST REPEATED], food delivery LLD,
+                vaccine appointment scheduling
+  Groww:        Stock Exchange + order matching engine [MOST REPEATED, SDE-3], SIP system, Splitwise
+  Zepto:        Google Calendar [MOST REPEATED, confirmed Jun/Sep/Oct 2024], quick commerce order mgmt,
+                Air Traffic Controller with Strategy pattern
+  PhonePe:      Customer Support/Issue Tracking + agent assignment strategies, wallet system
+  CRED:         Payment Processing Package, Contact Management with prefix search
+  Amazon:       Parking Lot [single most common across all companies], Elevator System,
+                Amazon Locker, BookMyShow, e-commerce cart
+  Google:       File System, Calendar, Chess/board games, Parking Lot, Hotel Management
+                (OOD discussion style — class hierarchies + design reasoning)
+
+====================================================
+  8. COMMON LLD MACHINE CODING PROBLEMS (Practice order)
+====================================================
+  STARTER (Week 1):
+    - Parking Lot System         ← universal starter, most common across all companies
+    - Tic Tac Toe / Snake & Ladder
+
+  CORE (Week 2):
+    - Movie Ticket Booking (BookMyShow)  ← concurrency for seat booking, DB schema
+    - Splitwise / Expense Sharing        ← settlement algorithm, common at unicorns
+    - Digital Wallet / Payment System    ← transaction atomicity, concurrency, fintech
+    - Ride Sharing App (Uber/Ola)        ← matching, pricing, Flipkart/Swiggy
+    - Rate Limiter / LRU Cache           ← technical system, FAANG favorite
+
+  ADVANCED (Week 3):
+    - Pub-Sub / Notification Service     ← Observer pattern, channel abstraction
+    - Elevator / Vending Machine         ← State Machine centerpiece
+    - In-memory Search Engine            ← Razorpay's #1 question
+    - Google Calendar                    ← Zepto's #1 question
+    - Stock Exchange / Order Matching    ← Groww's #1 question
+    - Online Auction System              ← Flipkart's #1 question
+
+  OTHER (conceptual understanding):
+    - Library Management System
+    - ATM System
+    - Hotel Booking System
+    - Inventory Management System
+    - Logging Framework
+
+====================================================
+  9. THE 45-60 MINUTE INTERVIEW FRAMEWORK
+====================================================
+  NEVER deviate from this order — skipping requirements is the #1 failure reason.
+
+  Min 0-5:   CLARIFY REQUIREMENTS
+    - Functional: core features, users, actions
+    - Non-functional: concurrency, error handling, extensibility
+    - Confirm scope (in/out). Write requirements visibly.
+    - Never assume; share assumptions explicitly.
+
+  Min 5-10:  IDENTIFY ENTITIES
+    - Scan requirements for meaningful nouns → candidate classes
+    - Filter: maintains changing state/enforces rules? → Class. Just data? → Field/Enum
+    - Identify the orchestrator (ParkingLot, Game, OrderService)
+
+  Min 10-25: CLASS DESIGN & RELATIONSHIPS
+    - Translate entities to classes with attributes + core methods
+    - Define interfaces for shared behaviors, enums for fixed types
+    - Apply SOLID (especially SRP). Favor composition.
+    - Define central manager/facade.
+
+  Min 25-40: CORE IMPLEMENTATION
+    - FAANG: skeleton code with key method bodies
+    - Indian unicorns: fully working code with I/O handling
+    - Core functionality first — don't try to implement everything
+
+  Min 40-50: PATTERNS, DB, API
+    - Name patterns you used (design first, name after)
+    - Sketch DB schema and API contracts if applicable
+
+  Min 50-60: REVIEW & EXTENSIBILITY
+    - How does design handle future changes?
+    - Concurrency considerations
+    - "What if" follow-up questions → senior shine moment
+
+====================================================
+  10. THE 10 MISTAKES THAT SINK SENIOR CANDIDATES
+====================================================
+  1. Over-engineering [#1 KILLER]: patterns for 1 implementation, elaborate factories for 2 types
+  2. Solving everything simultaneously → requirements → entities → design → code (sequential)
+  3. Skipping requirements clarification
+  4. Passive learning only (watching YouTube without blank-editor practice)
+  5. Misusing inheritance (deep hierarchies instead of interfaces)
+  6. Forcing patterns that don't fit (1-2 patterns per problem or none is fine)
+  7. Poor time management (too long designing, not enough working code)
+  8. Silent coding without explaining decisions — think aloud, verbalize trade-offs
+  9. Treating testing as afterthought — static methods/hardcoded deps = untestable
+  10. Ignoring concurrency in payment/booking/shared-resource systems
+
+====================================================
+  11. CLEAN CODE & COLLECTIONS
+====================================================
+  Clean Code: meaningful naming, small focused methods, no magic numbers, DRY, KISS, YAGNI
+  Immutable value objects: Money, Address — mark fields final by default
+
+  Collections for LLD:
+    - HashMap/ConcurrentHashMap: registries, caches
+    - PriorityQueue / PriorityBlockingQueue: scheduling, task prioritization
+    - LinkedHashMap: LRU cache (access-order mode)
+    - CopyOnWriteArrayList: Observer subscriber lists
+    - BlockingQueue: producer-consumer, task scheduler
+
+====================================================
+  3-WEEK PREPARATION SCHEDULE
+====================================================
+  Week 1 (2-3 hrs/day): FOUNDATIONS
+    Day 1-2: OOP + SOLID (deep-dive SRP and OCP — most tested)
+    Day 3:   Creational patterns — Factory, Singleton (all 5 thread-safe), Builder
+    Day 4:   Behavioral patterns — Strategy, Observer, State, Command (4 most critical)
+    Day 5:   Structural patterns — Decorator, Adapter, Facade, Composite
+    Day 6:   Solve Parking Lot (45 min timed)
+    Day 7:   Solve Tic Tac Toe or Snake & Ladder + watch 1-2 mock LLD interviews
+
+  Week 2 (3 hrs/day): PROBLEM SOLVING AT SPEED
+    Day 8:  BookMyShow (concurrency + DB schema)
+    Day 9:  Splitwise (expense sharing, settlement algorithm)
+    Day 10: Digital Wallet / Payment System (fintech: atomicity, concurrency, Strategy)
+    Day 11: Ride-Sharing App (matching, pricing — Flipkart/Swiggy)
+    Day 12: Rate Limiter or LRU Cache (FAANG technical systems)
+    Day 13: Full timed machine coding (90 min code + 15 min explain)
+    Day 14: Review all problems + mock interview on Pramp or interviewing.io
+
+  Week 3 (2-3 hrs/day): MASTERY & MOCKS
+    Day 15: Pub-Sub / Notification Service (Observer)
+    Day 16: Elevator or Vending Machine (State Machine)
+    Day 17: Concurrency deep-dive — ReentrantLock, ConcurrentHashMap, ExecutorService
+    Day 18: DB Schema + API Design for 2-3 previously solved problems
+    Day 19-20: Full 60-min mock interviews (complete flow)
+    Day 21: Personal cheat sheet — framework, pattern triggers, Java idioms
+
+  KEY: Active practice from BLANK EDITOR beats passive watching.
+  Target: 8-12 problems across Games, Products, Technical Systems.
+  Time yourself: 45 min (FAANG-style), 90 min (machine coding).
+
+====================================================
+  RESOURCES
+====================================================
+  Books:
+    - Head First Design Patterns (most recommended)
+    - Effective Java — Joshua Bloch (Java best practices, Enum singleton)
+
+  Website:
+    - Refactoring Guru (visual pattern explanations)
+    - ashishps1/awesome-low-level-design on GitHub (22.1k stars — best problem collection)
+
+  Video:
+    - Concept && Coding by Shrayansh Jain (YouTube/Udemy) — most recommended India LLD course
+    - Educative: Grokking the Low Level Design Interview (21 problems with UML)
+
+  Practice platforms:
+    - workat.tech/machine-coding — Indian company-specific
+    - Codezym.com — LeetCode-style LLD
+    - HelloInterview.com — structured LLD with delivery frameworks
+
+  Mock interviews:
+    - interviewing.io (anonymous mocks with FAANG engineers)
+    - Pramp (free peer-to-peer)
+    - Preplaced.in (350+ mentors, India-focused)
+
+====================================================

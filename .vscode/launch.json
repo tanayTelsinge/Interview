@@ -1,12 +1,54 @@
 {
       "version": "0.2.0",
       "configurations": [
-          {
-              "type": "java",
-              "name": "VirtualThreads",
-              "request": "launch",
-              "mainClass": "VirtualThreads",
-              "vmArgs": "--enable-preview"
-          }
-      ]
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.splitwise.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.snake_and_ladder.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.tic_tac_toe.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.parking_lot.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "LSPFixDemo",
+            "request": "launch",
+            "mainClass": "Day2_SOLID.code.LSP.good.LSPFixDemo",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "LSPViolationDemo",
+            "request": "launch",
+            "mainClass": "Day2_SOLID.code.LSP.bad.LSPViolationDemo",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "VirtualThreads",
+            "request": "launch",
+            "mainClass": "VirtualThreads",
+            "vmArgs": "--enable-preview"
+        }
+    ]
   }

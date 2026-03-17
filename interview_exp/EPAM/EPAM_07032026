@@ -21,13 +21,13 @@ Bad - Coding round
 1. Code 1
 ```
 class Vehicle {
-    public static getType() {
+    public String getType() {
         return "Vehicle";
     }
 }
 
 class Car extends Vehicle {
-    public static getType() {
+    protected String getType() {
         return "Car";
     }
 }
@@ -78,7 +78,8 @@ private B b;
 Also we need to add some annotation over @Component and @Configuration 
 with @...("b") and @...("appConfig") respectively.
 
-- We have List<Order> orders, each order has List<Item> items, each item has price and quantity. Find the total price of all orders. Use only one stream pipeline to solve this problem.
+- We have List<Order> orders, each order has List<Item> items, each item has price and category. Find the total price of all orders by category. 
+Use only one stream pipeline to solve this problem.
 
 - My answer
 ```
