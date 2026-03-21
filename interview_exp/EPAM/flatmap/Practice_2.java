@@ -1,4 +1,4 @@
-package interview_exp.EPAM;
+package interview_exp.EPAM.flatmap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

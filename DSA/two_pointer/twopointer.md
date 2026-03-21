@@ -5,6 +5,27 @@
 Two pointers eliminate the need for nested loops by moving two indices intelligently.
 Instead of checking every pair O(n²), you move pointers based on a condition — O(n).
 
+## Notes:
+
+- uses in-place word a lot (mainly for fast-slow type), eg. move zeros, find duplicate findELement.
+
+- common template for it
+
+- ASCII:
+ - a-z = 97-122
+ - A-Z = 65-90
+ - 0-9 = 48-57
+
+```java
+
+  int slow = 0;
+  for (int fast = 0; fast < nums.length; fast++) {
+            if (nums[fast] != 0) { //some condition
+                swap(nums, slow, fast); //some operation
+                slow++;
+            }
+        }
+```
 Three variants:
 - **Opposite ends** — left starts at 0, right at end, they converge
 - **Same direction (fast/slow)** — both start at 0, one moves faster

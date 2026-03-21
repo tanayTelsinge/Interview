@@ -3,6 +3,83 @@
       "configurations": [
         {
             "type": "java",
+            "name": "Stress",
+            "request": "launch",
+            "mainClass": "interview_exp.EPAM.Stress",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Practice_2_3",
+            "request": "launch",
+            "mainClass": "interview_exp.EPAM.flatmap.Practice_2_3",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Practice_2_1",
+            "request": "launch",
+            "mainClass": "interview_exp.EPAM.flatmap.Practice_2_1",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "StringCaps",
+            "request": "launch",
+            "mainClass": "StringCaps",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "MinWindowSubString",
+            "request": "launch",
+            "mainClass": "DSA.sliding_window.lvl3.MinWindowSubString",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "FindAllAnagrams",
+            "request": "launch",
+            "mainClass": "DSA.sliding_window.lvl2.FindAllAnagrams",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "PermutationInString",
+            "request": "launch",
+            "mainClass": "DSA.sliding_window.lvl_1.PermutationInString",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "DSA.sliding_window.lvl_1.Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "LongestSubstringWithoutRepeatingCharacter",
+            "request": "launch",
+            "mainClass": "DSA.sliding_window.lvl_1.LongestSubstringWithoutRepeatingCharacter",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.elevator_system.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Solution",
+            "request": "launch",
+            "mainClass": "Day4_problems.digital_wallet.code.Solution",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
             "name": "Solution",
             "request": "launch",
             "mainClass": "Day4_problems.splitwise.code.Solution",

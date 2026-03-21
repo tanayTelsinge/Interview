@@ -5,6 +5,8 @@ Clean code principles
 1. Extract Method Principle - function should do one thing and do well , should be small 20-30 lines, avoid deeply nested structures by early returns or helper functns.
 2. Minimize Function Parameters (reduce complexity) - atmost 3, more params, hard to read and maintain, use Objects instead.
 3. Dependency Inversion principle - use abstractions instead of concrete classes, more loose coupling, useful to swap implementations w/o affecting client code.
+4. Reduce cyclomatic complexity - metric that measures the complexity of a program by counting its decision points.
+checks no of if, switch while etc.
    
 OOPs
 Abstract how implemented - abstract class and interface
