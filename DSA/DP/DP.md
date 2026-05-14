@@ -71,5 +71,32 @@ class Solution {
 | **Performance**         | Slightly better       | Slightly slower due to recursion |
 
 
+### House Robber (LC 198)
+
+Intuition: at each house you either **skip it** (carry forward `prev1`) or **rob it** (`prev2 + nums[i]`). You only need the last two values — no array needed.
+
+```java
+public int rob(int[] nums) {
+    if (nums.length == 1) return nums[0];
+    int prev2 = nums[0];
+    int prev1 = Math.max(nums[0], nums[1]);
+    for (int i = 2; i < nums.length; i++) {
+        int curr = Math.max(prev1, prev2 + nums[i]);
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return prev1;
+}
+```
+
+| | |
+|---|---|
+| **TC** | O(n) |
+| **SC** | O(1) — two variables instead of dp array |
+
+**Pattern:** 1D DP → space-optimized with two variables (`prev1`, `prev2`)
+**Variants:** House Robber II (circular, LC 213), House Robber III (tree, LC 337)
+
+
 ### Longest Increasing Subsequence (LIS)
 

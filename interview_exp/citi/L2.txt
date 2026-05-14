@@ -1,0 +1,306 @@
+- Frontend
+- What is virtual DOM.
+- What is DOM.
+- Reconcilliation, React Fiber.
+- what is useMemo and useCallback, its use case? usecallback not sure.
+- what is dependency array, what happens if we kept it empty? render once, said but render always.
+- How can we implement infiinite scroll? dont know.
+- What is CSR and SSR? Explain in detail.
+
+- Backend
+- There is step over, and when I click it, debug point is not hitting why?
+- Error in production, but no logs. How will u fix it?
+- Code to take csv and output, no of columns and lines.
+- How will u resolve OutOfMemory error.
+
+
+
+
+Answers:
+
+─────────────────────────────────────────
+FRONTEND
+─────────────────────────────────────────
+
+What is DOM
+The DOM (Document Object Model) is the browser's in-memory, tree-structured
+representation of an HTML page. Every tag becomes a node, and JavaScript can
+read/mutate those nodes via the DOM API (getElementById, querySelector, etc.).
+Direct DOM manipulation is synchronous and can be expensive — touching a node
+can trigger layout recalculation ("reflow") and a repaint.
+
+What is Virtual DOM
+The Virtual DOM is a lightweight JavaScript object tree that mirrors the real
+DOM. React keeps this in memory and uses it as a staging area.
+When state changes:
+  1. React builds a new VDOM tree.
+  2. It diffs the new tree against the previous snapshot (diffing algorithm).
+  3. Only the minimal set of real DOM operations needed to reconcile the
+     difference is applied (patching).
+This batches and minimises costly real DOM writes, which is the performance
+gain.
+
+Reconciliation & React Fiber
+Reconciliation is the algorithm React uses to decide what changed between two
+VDOM renders and therefore what real DOM nodes to update.
+Classic reconciler (pre-16) was synchronous — once started it ran to
+completion, blocking the main thread for the whole tree.
+
+React Fiber (introduced in React 16) is a ground-up rewrite of the reconciler
+with two key ideas:
+
+1. Incremental rendering — work is split into small units ("fibers"). React can
+   pause mid-render, yield control back to the browser (so it can handle input
+   or paint a frame), and resume later. This keeps the UI responsive.
+
+2. Priority lanes — different updates get different priorities. A user keypress
+   is urgent (synchronous); a background data fetch update is not. Fiber can
+   deprioritise low-priority work and flush high-priority work first.
+
+This is what powers Concurrent Mode, useTransition, Suspense, and streaming
+SSR in React 18+.
+
+useMemo and useCallback
+Both are memoisation hooks that prevent unnecessary recalculation/re-creation
+between renders.
+
+useMemo — memoises a computed value.
+  const sorted = useMemo(() => expensiveSort(list), [list]);
+  The sort only reruns when `list` changes. Use when the computation itself is
+  expensive (filtering/sorting large arrays, derived data).
+
+useCallback — memoises a function reference.
+  const handleClick = useCallback(() => doSomething(id), [id]);
+  Without it, every render creates a new function object. A new reference
+  causes child components wrapped in React.memo to re-render even if nothing
+  logically changed. Use when passing callbacks as props to memoised children
+  or as dependencies in a useEffect.
+
+  Why it matters (simple):
+  Every render, React recreates functions. If Parent re-renders (e.g., count
+  changes), handleClick gets a brand-new reference — even if the logic didn't
+  change. React.memo on Child compares props by reference, sees a new function,
+  and re-renders Child unnecessarily. useCallback keeps the same reference
+  across renders so Child stays still.
+
+  Without useCallback:
+    const handleClick = () => console.log("clicked"); // new fn every render
+    <Child onClick={handleClick} />  // Child re-renders on every Parent render
+
+  With useCallback:
+    const handleClick = useCallback(() => console.log("clicked"), []);
+    <Child onClick={handleClick} />  // Child skips re-render ✓
+
+  Mental model: useCallback = useMemo but for functions.
+
+Common mistake: wrapping everything in useMemo/useCallback. The hooks
+themselves have a cost. Only apply them where profiling shows a real problem,
+or when referential equality matters (memo'd children, effect deps).
+
+Dependency Array
+The second argument to useEffect / useMemo / useCallback.
+React compares each item with the previous render's values (Object.is shallow
+equality) to decide whether to re-run the hook.
+
+  []          — run once, on mount only (effect) / compute once (memo)
+  [a, b]      — re-run whenever a or b changes
+  omitted     — re-run on every render
+
+"Empty array runs once" is only half-correct for useEffect. It runs after the
+first paint and then never again. But for useMemo, an empty array means the
+value is computed once and held forever. If the interviewer pushed back saying
+"render always" they may have been thinking of the omitted-dependency case
+or testing whether you know the distinction between the three variants.
+
+CSR vs SSR
+CSR — Client-Side Rendering
+The server sends a near-empty HTML shell plus a JS bundle. The browser
+downloads and executes the bundle, React mounts, fetches data, and renders.
+  Pros:  Rich interactivity, cheap server (static file hosting), instant
+         subsequent navigations (SPA).
+  Cons:  Slow First Contentful Paint (FCP) — nothing visible until JS runs.
+         Bad for SEO crawlers that don't execute JS. Large bundles hurt mobile.
+  When to use: Dashboards, admin tools, authenticated apps behind a login
+               where SEO doesn't matter.
+
+SSR — Server-Side Rendering
+The server runs React, generates full HTML for that request, and sends it.
+The browser paints immediately (fast FCP). Then the JS bundle loads and
+React "hydrates" the static HTML — attaching event listeners so it becomes
+interactive.
+  Pros:  Fast FCP, great SEO, works without JS (graceful degradation).
+  Cons:  Each request hits the server; higher TTFB under load. Hydration
+         mismatch bugs if server and client render different output.
+  When to use: Marketing pages, e-commerce product pages, news sites —
+               anywhere SEO or initial load speed is critical.
+
+Related terms worth mentioning at AVP level:
+  SSG (Static Site Generation) — HTML pre-built at build time, served from
+    CDN. Zero server cost per request. Used for blogs, docs.
+  ISR (Incremental Static Regeneration, Next.js) — SSG pages re-generated
+    in the background after a TTL, combining SSG performance with fresh data.
+  Streaming SSR (React 18 + Next.js App Router) — server streams HTML chunks
+    as components resolve, so the browser can paint above-the-fold content
+    before deep data fetches finish.
+
+In a Spring Boot + React setup:
+  Pure React (CRA/Vite) → CSR by default.
+  Next.js → SSR/SSG/ISR per route with the App Router.
+  Spring Boot can also server-render via Thymeleaf (traditional SSR, no
+  hydration) or act purely as a REST/GraphQL backend behind a Next.js frontend.
+
+─────────────────────────────────────────
+BACKEND
+─────────────────────────────────────────
+
+Step Over not hitting the breakpoint
+Likely causes in a Spring Boot project:
+
+1. Compiled class mismatch — the .class on the classpath is not from the source
+   you're viewing. Hot-swap or a stale build means the line numbers don't align.
+   Fix: clean + full rebuild, restart the debugger session.
+
+2. Wrong JVM / remote debug port — IDE is attached to a different JVM instance
+   (e.g., a Docker container running the old image). Verify the PID.
+
+3. Line skipped by JIT — the JVM's JIT compiler can inline or eliminate code
+   that is never reachable (dead branch, constant folded). Disable JIT for
+   debugging: -Xint flag, or use -XX:+PreserveFramePointer.
+
+4. Conditional breakpoint mismatch — the condition evaluates false every time
+   so the debugger never suspends.
+
+5. Aspect / proxy indirection — Spring wraps beans in CGLIB proxies. If you
+   step into a method that is proxied, execution lands in generated proxy code,
+   not your source. Step again or set a breakpoint inside the actual method.
+
+6. Optimised bytecode — Lombok, AspectJ compile-time weaving, or Kotlin can
+   alter line numbers. Ensure debug symbols are included (-g flag in javac).
+
+Error in Production with No Logs
+Approach in layers:
+
+1. Check infrastructure logs first — even if app logs are missing, the
+   container runtime (Docker/Kubernetes), load balancer (nginx/ALB), or OS
+   syslog may have captured an OOM kill, segfault, or abrupt JVM exit.
+
+2. Add structured logging at the framework level — Spring Boot's
+   spring.mvc.log-request-details=true or a custom OncePerRequestFilter can
+   log every request/response envelope without touching business logic.
+
+3. Check log shipping — if using an ELK/Splunk stack the issue may be the
+   log shipper (Filebeat/Fluentd) not the application. Verify the shipper is
+   alive and the index is receiving data.
+
+4. Enable distributed tracing — add Spring Cloud Sleuth / Micrometer Tracing
+   to get trace-id/span-id in every log line. Even one log line can correlate
+   across services.
+
+5. Heap dump / thread dump on failure — configure
+   -XX:+HeapDumpOnOutOfMemoryError or use a JVM agent (Pyroscope, Async
+   Profiler) to capture state at the moment of failure.
+
+6. Add health / actuator endpoints — Spring Actuator /actuator/health and
+   /actuator/metrics expose JVM metrics (memory, GC, threads) that can reveal
+   a problem even without app logs.
+
+7. Feature-flag a verbose logging profile — deploy a Spring profile that raises
+   log levels to DEBUG for the affected package without a full redeploy.
+
+CSV — count columns and lines (Java Streams approach)
+// Number of lines = number of data rows (excluding header if needed)
+// Number of columns = fields in the first row
+
+try (Stream<String> lines = Files.lines(Path.of("data.csv"))) {
+    List<String> all = lines.collect(Collectors.toList());
+    long lineCount = all.size();               // total lines including header
+    long colCount  = all.isEmpty() ? 0
+        : all.get(0).split(",", -1).length;   // -1 keeps trailing empty fields
+    System.out.println("Lines  : " + lineCount);
+    System.out.println("Columns: " + colCount);
+}
+
+For production use OpenCSV or Apache Commons CSV to handle quoted fields,
+embedded commas, and multi-line values correctly. Files.lines() is lazy and
+memory-efficient for large files — it doesn't read everything into memory at
+once.
+
+OutOfMemoryError — how to resolve
+Diagnose first, fix second:
+
+1. Identify the OOM type from the message:
+   - "Java heap space"          → objects accumulating on the heap
+   - "GC overhead limit"        → GC spinning but reclaiming <2% — classic leak
+   - "Metaspace"                → class metadata — too many classloaders (hot
+                                  deploy, reflection abuse, dynamic proxies)
+   - "unable to create thread"  → OS ran out of native memory for thread stacks
+
+2. Capture a heap dump (-XX:+HeapDumpOnOutOfMemoryError) and open it in
+   Eclipse MAT or VisualVM. The Dominator Tree shows which object graph holds
+   the most retained heap — 90% of the time one class jumps out.
+
+3. Common root causes in Spring Boot:
+   - Unbounded caches (Caffeine/Ehcache with no eviction policy)
+   - Session data accumulation (HttpSession holding large objects)
+   - Static or singleton collections that grow without bound
+   - N+1 queries pulling huge result sets into memory (fix with pagination)
+   - Large file uploads buffered entirely in memory (use streaming / temp files)
+
+4. Fix strategies:
+   - Add eviction policies to caches
+   - Switch from List.of(allRows) to paginated / streaming processing
+   - Increase heap as a short-term relief: -Xmx but this delays not fixes
+   - Reduce thread pool size if "unable to create thread"
+   - Use G1GC or ZGC and tune -XX:MaxGCPauseMillis for better collection
+
+5. Prevent recurrence: add Micrometer heap / GC metrics to Grafana with an
+   alert when heap usage sustains above 80% for > 5 minutes.
+
+─────────────────────────────────────────
+Infinite scroll
+-The approach
+
+I'd use the Intersection Observer API with a sentinel element. 
+The idea is to place an invisible <div> at the bottom of the list and observe it
+ — when it enters the viewport, fetch the next page.
+
+The state I'd need:
+
+data — the accumulated list
+page — current offset/page number
+hasMore — to stop fetching when all data is loaded
+Two effects:
+
+A fetch effect that runs whenever page changes — appends new results to the existing list
+An observer effect that watches the sentinel — when it's visible and hasMore is true, increments page
+Why Intersection Observer over scroll events?
+
+Scroll events fire continuously and need throttling/debouncing
+Intersection Observer is event-driven — only fires when the element actually crosses the viewport boundary, so it's more performant
+Edge cases I'd handle:
+
+A loading flag to prevent duplicate fetches while one is in flight
+Setting hasMore to false when loaded count >= total from the API response
+Cleanup — disconnect the observer on unmount
+That's essentially what we built here. The key insight the interviewer is looking for is Intersection Observer + sentinel pattern and knowing why it's better than a scroll listener.
+
+
+In angular
+How to implement infinite scroll in Angular:
+
+Place a sentinel <div #sentinel> at the bottom of the list
+Use @ViewChild('sentinel') to get a reference to it
+Set up IntersectionObserver in ngAfterViewInit lifecycle hook
+When sentinel enters viewport → increment page/offset
+Call the API with the new offset and append results: this.users = [...this.users, ...data.users]
+Use a hasMore flag to stop fetching when done
+Disconnect the observer in ngOnDestroy (equivalent of React's cleanup function)
+Key Angular-specific differences vs React:
+
+React	Angular
+useRef	@ViewChild
+useEffect (on mount)	ngAfterViewInit
+useEffect (cleanup)	ngOnDestroy
+useState	signal() or class property
+append with spread	same — spread or .push()
+The IntersectionObserver API itself is identical — it's native browser, so that part of your answer stays exactly the same in any framework.

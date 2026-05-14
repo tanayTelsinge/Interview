@@ -1,0 +1,19 @@
+BFS template
+
+TC - o(n) as we visit eacch node once
+SC - 0(n) as queue stores each node once.
+
+Queue
+While queue not empty
+    size = queue size
+    loop size times
+        poll node
+        add children //processing
+
+- BFS, 1 and 2
+- ZigZag Traversal - medium  - reverse alternate - a boolean reverse and if false, lvl.addLast() or true lvl.addFirst()
+- Right side view - store last if (i == size - 1) ans.add(curr.val)
+- left side view - store first   if (i == 0) ans.add(curr.val)
+- Avg lvl 
+- Largest lvl
+- Min Depth - 

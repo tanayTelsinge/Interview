@@ -23,5 +23,16 @@ public class FirstRepeatingCharacter {
                     .getKey();
 
         System.out.println(ans);
+
+
+        var res2 =  s.chars().mapToObj(c -> (char) c)
+                .filter(c -> s.indexOf(c) != s.lastIndexOf(c))
+                .findFirst()
+                .get();
+
+        System.out.println(res2);
+        
+
+
+
     }
-}

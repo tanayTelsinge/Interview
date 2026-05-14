@@ -3,6 +3,230 @@
       "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "DSA.graph.topological_sort.Main",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "DSA.graph.topological_sort.Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "javascript.Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Prefixsuffix",
+            "request": "launch",
+            "mainClass": "DSA.prefix_sum.Prefixsuffix",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "CitiPractice",
+            "request": "launch",
+            "mainClass": "Streams.CitiPractice",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "ProductOfArrayExceptSelf",
+            "request": "launch",
+            "mainClass": "DSA.arrays.ProductOfArrayExceptSelf",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "HouseRobber",
+            "request": "launch",
+            "mainClass": "DSA.DP.bottom_up.HouseRobber",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "LCA",
+            "request": "launch",
+            "mainClass": "DSA.tree.dfs_leetcode.LCA",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "PathSumTwo",
+            "request": "launch",
+            "mainClass": "DSA.tree.dfs_leetcode.dfs_backtracking_tree.PathSumTwo",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "HardMaxPathSum",
+            "request": "launch",
+            "mainClass": "DSA.tree.dfs_leetcode.HardMaxPathSum",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "PathSum",
+            "request": "launch",
+            "mainClass": "DSA.tree.dfs_leetcode.PathSum",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "MaxDepthOfBinaryTree",
+            "request": "launch",
+            "mainClass": "DSA.tree.dfs_leetcode.MaxDepthOfBinaryTree",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Practice_2",
+            "request": "launch",
+            "mainClass": "interview_exp.EPAM.flatmap.Practice_2",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "PeriodProblemCiti",
+            "request": "launch",
+            "mainClass": "Dates.PeriodProblemCiti",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "Dates.Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Tree",
+            "request": "launch",
+            "mainClass": "DSA.tree.core.Tree",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "ListWithIntegers",
+            "request": "launch",
+            "mainClass": "Streams.hard.ListWithIntegers",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "PascalCaseEPAM",
+            "request": "launch",
+            "mainClass": "Streams.PascalCaseEPAM",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "FirstRepeatingCharacter",
+            "request": "launch",
+            "mainClass": "Streams.FirstRepeatingCharacter",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "FindDuplicatesIBM",
+            "request": "launch",
+            "mainClass": "Streams.FindDuplicatesIBM",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "SumOfUniqueElements",
+            "request": "launch",
+            "mainClass": "Streams.SumOfUniqueElements",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "ArrangeNumbers",
+            "request": "launch",
+            "mainClass": "Streams.ArrangeNumbers",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "OccurenceOfEachWord",
+            "request": "launch",
+            "mainClass": "Streams.OccurenceOfEachWord",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "SecondHighestWord",
+            "request": "launch",
+            "mainClass": "Streams.SecondHighestWord",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "RemoveDuplicates",
+            "request": "launch",
+            "mainClass": "Streams.RemoveDuplicates",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "HighestLengthWord",
+            "request": "launch",
+            "mainClass": "Streams.HighestLengthWord",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "KokoEatingBananas",
+            "request": "launch",
+            "mainClass": "DSA.binary_search.lvl2.KokoEatingBananas",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "SearchA2DMatrix",
+            "request": "launch",
+            "mainClass": "DSA.binary_search.lvl_1.SearchA2DMatrix",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "Core.Test",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "SecondHighestNumber",
+            "request": "launch",
+            "mainClass": "Streams.SecondHighestNumber",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
+            "name": "Practice",
+            "request": "launch",
+            "mainClass": "Practice",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
             "name": "Stress",
             "request": "launch",
             "mainClass": "interview_exp.EPAM.Stress",

@@ -22,5 +22,11 @@ public class HighestLengthWord {
         String ans2 = Arrays.stream(s.split(" ")).max(Comparator.comparing(String::length)).get();
 
         System.out.println( " ans 2 : "  + ans2);
+
+        //or
+
+        var res = Arrays.stream(s.split(" ")).sorted((a,b) -> b.length() - a.length()).findFirst().get();
+
+        System.out.println(res);
     }
 }

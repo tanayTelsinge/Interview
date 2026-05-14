@@ -7,6 +7,13 @@ public class Prefixsuffix {
         int[] arr = {3, 1, 4, 2, 5};
 
         int n = arr.length;
+
+        //in place
+        // for(int i = 1; i < n; i++) {
+        //     nums[i] += nums[i - 1];
+        // }
+        // return nums;
+
         System.out.println("Original Array: ");
         for (int i = 0; i < n; i++) {
             System.out.print(arr[i] + " ");

@@ -1,0 +1,135 @@
+DFS Tree Notes
+==============
+
+Traversal Order
+---------------
+Pre  : Root → L → R   | use: copy, serialize, build tree, path problems
+In   : L → Root → R   | use: BST problems
+Post : L → R → Root   | use: height, diameter, balanced, max path sum, delete tree
+
+TC: O(n)  SC: O(h) — height of tree (log n balanced, n worst)
+DFS < BFS memory (BFS is O(n) width)
+
+Note: 90% recursive is fine, iterative only if interviewer asks.
+
+
+Templates
+---------
+Postorder (most common for bottom-up):
+    public int postorder(TreeNode root) {
+        if (root == null) return 0;
+        int left = postorder(root.left);
+        int right = postorder(root.right);
+        return Math.max(left, right) + 1;
+    }
+
+Top-down (Path Sum):
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) return false;
+        if (root.left == null && root.right == null) return targetSum == root.val;
+        return hasPathSum(root.left, targetSum - root.val) ||
+               hasPathSum(root.right, targetSum - root.val);
+    }
+
+Two-tree DFS (Same Tree):
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+
+Symmetric Tree (mirror — compare left with right):
+    public boolean mirror(TreeNode l, TreeNode r) {
+        if (l == null && r == null) return true;
+        if (l == null || r == null) return false;
+        if (l.val != r.val) return false;
+        return mirror(l.left, r.right) && mirror(l.right, r.left);
+    }
+
+
+Problem Patterns
+----------------
+Pattern       | When to use                              | Problems (LC#)
+--------------|------------------------------------------|----------------------------------------------------------
+Bottom-up     | Need child results before deciding       | Max Depth(104), Diameter(543), Balanced(110),
+(Post-order)  | "What can my subtree tell me?"           | Max Path Sum(124), Count Nodes(222), LCA(236),
+              | return value carries info upward         | Binary Tree Cameras(968), Kth Smallest BST(230)
+--------------|------------------------------------------|----------------------------------------------------------
+Top-down      | Pass accumulated state from root down    | Path Sum(112), Path Sum II(113), Good Nodes(1448),
+(Pre-order)   | "What do I know so far?"                | Sum Root to Leaf(129), BT Paths(257),
+              | parameter carries info downward          | Max Depth(104) [alt], Validate BST(98)
+--------------|------------------------------------------|----------------------------------------------------------
+Two-tree DFS  | Compare/merge two trees simultaneously  | Same Tree(100), Symmetric Tree(101),
+              | Two pointers, recurse both together      | Merge Two Trees(617)
+--------------|------------------------------------------|----------------------------------------------------------
+BST specific  | Inorder = sorted, use BST property       | Validate BST(98), Kth Smallest(230),
+(Inorder)     | left < node < right                      | LCA of BST(235), Insert/Delete in BST(701/450)
+--------------|------------------------------------------|----------------------------------------------------------
+LCA pattern   | Find meeting point of two nodes          | LCA of BT(236), LCA of BST(235),
+              | return node if found, null otherwise     | LCA of Deepest Leaves(1123)
+
+
+Hard Max Path Sum (LC 124)
+--------------------------
+Intuition: at every node ask two questions —
+  1. Best I can offer parent?  → node.val + max(l, r)   [single arm]
+  2. Best arch peaking at me?  → l + node.val + r       [both arms, global max]
+
+Every path has ONE peak node. Pretend each node is that peak.
+Global max captures the best arch across all nodes.
+
+Key rules:
+- Clamp paths to 0 (skip negative subtrees, not negative nodes — can't break connectivity)
+- Global max needed — local resets each call and loses deep results
+- Return single arm (not arch) — parent can't attach to a fork
+
+Pattern: when return value and answer conflict in shape → side-channel global variable.
+
+
+Backtracking on Trees (Path Sum II pattern)
+--------------------------------------------
+Problem: collect ALL root-to-leaf paths where sum == target (LC 113)
+
+Key intuition: every node must add itself to path FIRST, then decide what to do next.
+The leaf check is just a special case of "what to do next" — not a gate before adding.
+
+Standard template (add → recurse → remove):
+    public void dfs(TreeNode root, List<List<Integer>> result, List<Integer> path, int targetSum) {
+        if (root == null) return;
+
+        path.add(root.val);                          // 1. add self
+
+        if (root.left == null && root.right == null  // 2. leaf check
+                && targetSum == root.val) {
+            result.add(new ArrayList<>(path));       //    snapshot — NOT reference!
+        }
+
+        dfs(root.left, result, path, targetSum - root.val);   // 3. recurse
+        dfs(root.right, result, path, targetSum - root.val);
+
+        path.remove(path.size() - 1);               // 4. backtrack
+    }
+
+Common mistakes:
+- Adding leaf check BEFORE path.add() → leaf value missing from result
+- result.add(path) instead of new ArrayList<>(path) → all entries point to same empty list after backtracking
+
+Why no explicit return after result.add():
+  At a leaf, both recursive calls hit null and return immediately — no-op.
+  path.remove() then cleans up. Return is optional (minor optimization only).
+
+Use this pattern for: Path Sum II(113), BT Paths(257), Path Sum III(437), Sum Root to Leaf(129)
+
+
+Iterative (less important)
+--------------------------
+Preorder — pop → push right then left:
+    Stack<TreeNode> st; st.push(root);
+    while (!st.isEmpty()) { node = st.pop(); res.add(node.val); push right, push left; }
+
+Inorder — push curr, go left → pop → process → go right:
+    while (curr != null || !st.isEmpty()) {
+        while (curr != null) { st.push(curr); curr = curr.left; }
+        curr = st.pop(); res.add(curr.val); curr = curr.right;
+    }

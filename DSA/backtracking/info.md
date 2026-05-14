@@ -1,5 +1,5 @@
 ## Backtracking
-
+- Backtracking = Choose - Explore (Recursion) - Undo 
 - Back + tracking (Go back if not valid)
 - DFS of state space tree
 

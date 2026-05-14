@@ -8,6 +8,9 @@
   Example: 
     String result = stream.collect(Collectors.joining());
 
+Collectors.joining (3 params)
+//prefix, suffix, to join how "," or "" nothing or " "
+
 - Collectors.groupingBy() takes 3 parameters:
   1. Classifier function - how to group elements eg. Function::identity, Person::getAge etc.
   3. Downstream collector (optional) - how to collect grouped elements eg. Collectors.toList(), Collectors.counting() etc.

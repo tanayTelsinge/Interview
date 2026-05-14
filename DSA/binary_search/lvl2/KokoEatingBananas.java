@@ -13,8 +13,10 @@ public class KokoEatingBananas {
 
         while (left < right) {
             int mid = left + (right - left) / 2;
-            if (feasible(piles, mid, h)) right = mid;  // mid works → try slower
-            else left = mid + 1;
+            if (feasible(piles, mid, h))
+                right = mid; // mid works → try slower
+            else
+                left = mid + 1;
         }
 
         return left;
@@ -23,21 +25,42 @@ public class KokoEatingBananas {
     private boolean feasible(int[] piles, int speed, int h) {
         int hours = 0;
         for (int pile : piles) {
-            hours += (pile + speed - 1) / speed;   // ceil(pile / speed)
+            hours += (pile + speed - 1) / speed; // ceil(pile / speed)
         }
         return hours <= h;
     }
 
     private int getMax(int[] piles) {
         int max = 0;
-        for (int p : piles) max = Math.max(max, p);
+        for (int p : piles)
+            max = Math.max(max, p);
         return max;
     }
 
     public static void main(String[] args) {
         KokoEatingBananas sol = new KokoEatingBananas();
-        System.out.println(sol.minEatingSpeed(new int[]{3, 6, 7, 11}, 8));    // 4
-        System.out.println(sol.minEatingSpeed(new int[]{30, 11, 23, 4, 20}, 5)); // 30
-        System.out.println(sol.minEatingSpeed(new int[]{30, 11, 23, 4, 20}, 6)); // 23
+        System.out.println(sol.minEatingSpeed(new int[] { 3, 6, 7, 11 }, 8)); // 4
+        System.out.println(sol.minEatingSpeed(new int[] { 30, 11, 23, 4, 20 }, 5)); // 30
+        System.out.println(sol.minEatingSpeed(new int[] { 30, 11, 23, 4, 20 }, 6)); // 23
+
+         System.out.println(minSpeed(new int[] { 3, 6, 7, 11 }, 8)); // 4
+        System.out.println(minSpeed(new int[] { 30, 11, 23, 4, 20 }, 5)); // 30
+        System.out.println(minSpeed(new int[] { 30, 11, 23, 4, 20 }, 6)); // 23
+    }
+
+    // First True pattern: minimize k where feasible(k) = true
+    // [F,F,F,T,T,T] → find leftmost T → r=mid on true, l=mid+1 on false
+    public static int minSpeed(int[] piles, int h) {
+        int l = 1, r = 0;
+        for (int p : piles) r = Math.max(r, p);
+
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            long hours = 0;
+            for (int p : piles) hours += (p + mid - 1) / mid;
+            if (hours <= h) r = mid;
+            else l = mid + 1;
+        }
+        return l;
     }
 }

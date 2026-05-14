@@ -1,0 +1,200 @@
+- What is start point of react, which file.
+- index.html main.ts app.tsx etc.
+
+- when we add <div> in raect, what happens internally.
+
+- Backend
+- Spring Cloud detail with followup que.
+    - what if gateway has 2 instances of some microservice which choose?
+    - how authentication flow.
+    - centralized config if any change, how detected by microservices.
+    - If authentication at api gateway, where authorization. and microservice secure how?
+    - how circuit breaker is implemmented.
+
+
+─────────────────────────────────────────
+ANSWERS
+─────────────────────────────────────────
+
+Start point of React app
+  index.html — has <div id="root">
+  main.tsx   — calls ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+  App.tsx    — root component, all other components branch from here.
+  Order: index.html → main.tsx → App.tsx
+
+When you add a <div> in React — what happens internally
+  1. JSX compiles to React.createElement('div', props, children) — a plain JS object (VDOM node).
+  2. On render, React adds this node to its Virtual DOM tree.
+  3. React diffs new VDOM vs previous snapshot (reconciliation).
+  4. Only if this <div> is new/changed, React calls document.createElement('div')
+     and inserts it into the real DOM.
+  So a JSX <div> never touches the real DOM directly — it goes through the VDOM diff first.
+
+─────────────────────────────────────────
+BACKEND — Spring Cloud
+─────────────────────────────────────────
+
+Spring Cloud overview
+  API Gateway (Spring Cloud Gateway) — single entry point, handles routing,
+  auth, rate limiting.
+  Service Registry (Eureka) — microservices register themselves; gateway and
+  other services look up instances by name.
+  Config Server (Spring Cloud Config) — centralised config stored in Git/Vault,
+  served to all services on startup.
+  Load Balancer (Spring Cloud LoadBalancer / Ribbon) — client-side LB.
+  Circuit Breaker (Resilience4j) — stops calling a failing service, returns
+  fallback instead.
+
+Q: Gateway has 2 instances of a microservice — which is chosen?
+  Spring Cloud LoadBalancer uses Round Robin by default.
+  It fetches the live instance list from Eureka and alternates between them.
+  Can be switched to Random or a custom strategy.
+
+Q: Authentication flow
+  Client → API Gateway → validates JWT (via Spring Security filter or custom
+  filter). If valid, Gateway forwards request + passes user info (e.g., as a
+  header X-User-Id / X-Roles) to the downstream microservice.
+  Microservices trust the gateway — they read the forwarded headers, not the
+  original token.
+
+Q: Centralized config — change detection
+  Two options:
+  1. Spring Cloud Bus (Kafka/RabbitMQ) — Config Server publishes a refresh
+     event on config change; all services listening on the bus call
+     /actuator/refresh automatically.
+  2. Manual — POST /actuator/refresh to each service (not scalable).
+  With @RefreshScope on beans, the bean is re-created with the new config
+  values without restarting the service.
+
+Q: Authentication at gateway, authorization where? How are microservices secured?
+  Authentication — at the API Gateway (verify who you are, validate JWT).
+  Authorization — inside each microservice (verify what you can do).
+    Use @PreAuthorize("hasRole('ADMIN')") with Spring Security in each service.
+    The gateway passes roles/claims as headers; each service reads and enforces.
+  Microservice-to-microservice security — mTLS or a shared internal JWT secret
+  so services reject calls that didn't come through the gateway.
+
+Q: How is Circuit Breaker implemented (Resilience4j)
+  Add dependency: resilience4j + spring-boot-starter-aop.
+  Annotate the method:
+    @CircuitBreaker(name = "orderService", fallbackMethod = "fallback")
+    public Order getOrder(String id) { ... }
+
+    public Order fallback(String id, Exception e) {
+        return new Order("default");
+    }
+
+  Configure in application.yml:
+    resilience4j.circuitbreaker.instances.orderService:
+      slidingWindowSize: 10         # last 10 calls
+      failureRateThreshold: 50      # open if >50% fail
+      waitDurationInOpenState: 10s  # wait before trying again (half-open)
+
+  States: CLOSED (normal) → OPEN (failing, use fallback) → HALF-OPEN (test
+  one request) → CLOSED again if it succeeds.
+
+─────────────────────────────────────────
+SPRING CLOUD — Maven Dependencies
+─────────────────────────────────────────
+
+<!-- BOM — add to <dependencyManagement>, controls all Spring Cloud versions -->
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-dependencies</artifactId>
+      <version>2023.0.3</version>   <!-- latest stable for Spring Boot 3.x -->
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+1. API Gateway — Spring Cloud Gateway (reactive, replaces Zuul)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-gateway</artifactId>
+   </dependency>
+   <!-- also needs: -->
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-webflux</artifactId>
+   </dependency>
+   Note: Gateway is built on WebFlux (Netty), NOT spring-boot-starter-web.
+   Adding both on the classpath causes startup conflict.
+
+2. Service Registry — Eureka Server (the registry itself)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+   </dependency>
+   Enable with @EnableEurekaServer on the main class.
+
+3. Eureka Client (every microservice that registers)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+   </dependency>
+   Auto-registers the service; @EnableDiscoveryClient optional in newer versions.
+
+4. Config Server (the centralised config service)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-config-server</artifactId>
+   </dependency>
+   Enable with @EnableConfigServer.
+
+5. Config Client (every service that reads from Config Server)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-config</artifactId>
+   </dependency>
+   Set spring.config.import=configserver:http://config-server:8888 in
+   application.yml (Spring Boot 3.x approach; replaces bootstrap.yml).
+
+6. Spring Cloud Bus — push config refresh events (needs a broker)
+   <!-- With RabbitMQ -->
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+   </dependency>
+   <!-- With Kafka -->
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+   </dependency>
+   Also add spring-boot-starter-actuator and expose the bus-refresh endpoint.
+
+7. Client-side Load Balancer — Spring Cloud LoadBalancer (replaces Ribbon)
+   <!-- Pulled in transitively by Eureka client, but explicit if needed: -->
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+   </dependency>
+   Use @LoadBalanced on your RestTemplate/WebClient bean.
+
+8. Circuit Breaker — Resilience4j
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+   </dependency>
+   <!-- AOP is required for @CircuitBreaker annotation to work -->
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-aop</artifactId>
+   </dependency>
+
+9. OpenFeign — declarative HTTP client (used with LB + Eureka)
+   <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-openfeign</artifactId>
+   </dependency>
+   Enable with @EnableFeignClients. Feign + LoadBalancer + Eureka lets you
+   call other services by name: @FeignClient(name = "order-service").
+
+Quick version rule:
+  Spring Boot 3.x  → Spring Cloud 2023.x (Leyton release train)
+  Spring Boot 2.7.x → Spring Cloud 2021.x (Jubilee)
+  Always use the BOM — never set individual Spring Cloud artifact versions
+  manually, they must stay in sync.
+
