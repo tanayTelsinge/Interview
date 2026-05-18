@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 24px; }
+  h1 { color: #e50914; text-align: center; font-size: 24px; margin-bottom: 4px; letter-spacing: 1px; }
+  .subtitle { text-align: center; color: #666; font-size: 12px; margin-bottom: 24px; }
+  .arch { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: grid; gap: 12px; }
+  .row-1 { grid-template-columns: 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .layer { background: #161616; border: 1px solid #2a2a2a; border-radius: 10px; padding: 14px; }
+  .layer-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+  .services { display: grid; gap: 7px; }
+  .s1 { grid-template-columns: 1fr; }
+  .s2 { grid-template-columns: 1fr 1fr; }
+  .s3 { grid-template-columns: 1fr 1fr 1fr; }
+  .s4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .svc { background: #1e1e1e; border-radius: 6px; padding: 8px 10px; border-left: 3px solid #333; }
+  .svc-name { font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .svc-desc { font-size: 10px; color: #888; line-height: 1.4; }
+  .tag { display: inline-block; font-size: 8px; padding: 1px 4px; border-radius: 3px; margin-left: 4px; font-weight: 700; vertical-align: middle; }
+  .tag-custom { background: #b39ddb; color: #000; }
+  .tag-oss { background: #4caf50; color: #000; }
+  .tag-aws { background: #ff9900; color: #000; }
+  .arrow-row { text-align: center; color: #444; font-size: 20px; line-height: 1; }
+  .red .layer-title { color: #e50914; } .red .svc { border-left-color: #e50914; }
+  .blue .layer-title { color: #4a9eff; } .blue .svc { border-left-color: #4a9eff; }
+  .orange .layer-title { color: #ff9800; } .orange .svc { border-left-color: #ff9800; }
+  .green .layer-title { color: #4caf50; } .green .svc { border-left-color: #4caf50; }
+  .yellow .layer-title { color: #ffeb3b; } .yellow .svc { border-left-color: #ffeb3b; }
+  .teal .layer-title { color: #4dd0e1; } .teal .svc { border-left-color: #4dd0e1; }
+  .pink .layer-title { color: #f48fb1; } .pink .svc { border-left-color: #f48fb1; }
+  .purple .layer-title { color: #ce93d8; } .purple .svc { border-left-color: #ce93d8; }
+  .amber .layer-title { color: #ffd54f; } .amber .svc { border-left-color: #ffd54f; }
+  .lime .layer-title { color: #c6ff00; } .lime .svc { border-left-color: #c6ff00; }
+</style>
+</head>
+<body>
+<h1>🎬 Netflix System Architecture</h1>
+<div class="subtitle">~200M users · 190+ countries · Billions of events/day · Runs on AWS</div>
+<div class="arch">
+
+  <div class="row row-1">
+    <div class="layer red">
+      <div class="layer-title">① Client Layer</div>
+      <div class="services s4">
+        <div class="svc"><div class="svc-name">Smart TVs / Consoles</div><div class="svc-desc">Native apps, adaptive streaming SDK embedded in 1000+ device types</div></div>
+        <div class="svc"><div class="svc-name">Mobile (iOS / Android)</div><div class="svc-desc">Offline downloads, React Native UI, adaptive bitrate</div></div>
+        <div class="svc"><div class="svc-name">Web Browser</div><div class="svc-desc">React frontend, EME API for DRM playback</div></div>
+        <div class="svc"><div class="svc-name">Netflix SDK</div><div class="svc-desc">Shipped inside devices at factory. Controls playback, auth, QoE reporting</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ All requests</div>
+
+  <div class="row row-1">
+    <div class="layer blue">
+      <div class="layer-title">② CDN & Edge — Open Connect <span class="tag tag-custom">Netflix Custom</span></div>
+      <div class="services s3">
+        <div class="svc"><div class="svc-name">Open Connect Appliances</div><div class="svc-desc">Physical servers Netflix places inside ISPs globally. Serve 95%+ of video — data never leaves the ISP network</div></div>
+        <div class="svc"><div class="svc-name">DASH / HLS Adaptive Bitrate</div><div class="svc-desc">Switches video quality every few seconds based on real-time bandwidth. Seamless for viewer</div></div>
+        <div class="svc"><div class="svc-name">AWS CloudFront (fallback)</div><div class="svc-desc">API responses, images, metadata. Video always goes through Open Connect</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ Non-video API traffic</div>
+
+  <div class="row row-1">
+    <div class="layer orange">
+      <div class="layer-title">③ API Gateway & Load Balancing</div>
+      <div class="services s3">
+        <div class="svc"><div class="svc-name">Zuul <span class="tag tag-custom">Netflix OSS</span></div><div class="svc-desc">Edge gateway — routing, auth token validation, rate limiting, A/B experiment injection on every request</div></div>
+        <div class="svc"><div class="svc-name">AWS ELB</div><div class="svc-desc">Distributes traffic across AZs. Auto scales with demand spikes (Friday night rush)</div></div>
+        <div class="svc"><div class="svc-name">Ribbon <span class="tag tag-custom">Netflix OSS</span></div><div class="svc-desc">Client-side load balancing between microservices. Works with Eureka for service discovery</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ Routed to services</div>
+
+  <div class="row row-1">
+    <div class="layer green">
+      <div class="layer-title">④ Core Microservices — 500+ Services on AWS ECS / EC2</div>
+      <div class="services s4">
+        <div class="svc"><div class="svc-name">User Service</div><div class="svc-desc">Auth, profiles, preferences, subscription tier, parental controls</div></div>
+        <div class="svc"><div class="svc-name">Catalog Service</div><div class="svc-desc">Content metadata, titles, genres, regional availability, artwork</div></div>
+        <div class="svc"><div class="svc-name">Playback Service</div><div class="svc-desc">Stream URL generation, DRM license, device capability negotiation</div></div>
+        <div class="svc"><div class="svc-name">Recommendation Service</div><div class="svc-desc">ML models serve personalized rows. Different model per surface (home, search, similar titles)</div></div>
+        <div class="svc"><div class="svc-name">Search Service</div><div class="svc-desc">Elasticsearch-powered. Multilingual, typo-tolerant, personalized ranking</div></div>
+        <div class="svc"><div class="svc-name">Billing Service</div><div class="svc-desc">Subscription management, payment processing, dunning, invoicing</div></div>
+        <div class="svc"><div class="svc-name">Notification Service</div><div class="svc-desc">Email, push, in-app alerts. Async — consumes from Kafka, never blocks user flow</div></div>
+        <div class="svc"><div class="svc-name">A/B Test Service</div><div class="svc-desc">1000s of concurrent experiments — UI, algorithm, thumbnail, audio quality tests</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ Events published to bus</div>
+
+  <div class="row row-1">
+    <div class="layer yellow">
+      <div class="layer-title">⑤ Async Messaging — Apache Kafka</div>
+      <div class="services s4">
+        <div class="svc"><div class="svc-name">Apache Kafka <span class="tag tag-oss">OSS</span></div><div class="svc-desc">Central event backbone. Trillions of events/day. Decouples all services — producers don't know consumers</div></div>
+        <div class="svc"><div class="svc-name">Play Events</div><div class="svc-desc">Every second of video watched → Kafka → analytics. Powers "continue watching" + recommendation signals</div></div>
+        <div class="svc"><div class="svc-name">User Activity Events</div><div class="svc-desc">Search, browse, thumbs up/down, pause → feeds ML model training pipelines</div></div>
+        <div class="svc"><div class="svc-name">QoE / Error Events</div><div class="svc-desc">Rebuffering, startup time, errors → real-time alerting, ISP performance dashboards</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ Consumed by data, cache & processing layers</div>
+
+  <div class="row row-3">
+    <div class="layer teal">
+      <div class="layer-title">⑥ Data Stores</div>
+      <div class="services s1">
+        <div class="svc"><div class="svc-name">MySQL (AWS RDS)</div><div class="svc-desc">Billing, user accounts — ACID transactions</div></div>
+        <div class="svc"><div class="svc-name">Apache Cassandra</div><div class="svc-desc">Viewing history, activity — high write throughput, no SPOF, multi-region</div></div>
+        <div class="svc"><div class="svc-name">AWS S3</div><div class="svc-desc">Raw video masters, encoded assets, data lake for all analytics</div></div>
+        <div class="svc"><div class="svc-name">Elasticsearch</div><div class="svc-desc">Search index + log aggregation across all services</div></div>
+      </div>
+    </div>
+
+    <div class="layer pink">
+      <div class="layer-title">⑦ Caching</div>
+      <div class="services s1">
+        <div class="svc"><div class="svc-name">EVCache <span class="tag tag-custom">Netflix Custom</span></div><div class="svc-desc">Memcached wrapper. 30M+ req/sec. Multi-region replicated. Catalog & homepage rows cached here</div></div>
+        <div class="svc"><div class="svc-name">Redis</div><div class="svc-desc">Sessions, rate limiting counters, leaderboards, pub/sub</div></div>
+        <div class="svc"><div class="svc-name">Local In-Process Cache</div><div class="svc-desc">Each microservice caches hot data in-memory. First line before EVCache</div></div>
+      </div>
+    </div>
+
+    <div class="layer purple">
+      <div class="layer-title">⑧ Big Data Processing</div>
+      <div class="services s1">
+        <div class="svc"><div class="svc-name">Apache Spark</div><div class="svc-desc">Batch — recommendation model training, content analytics, business reports on S3 data lake</div></div>
+        <div class="svc"><div class="svc-name">Apache Flink</div><div class="svc-desc">Real-time stream processing — live QoE metrics, fraud detection, trending content</div></div>
+        <div class="svc"><div class="svc-name">Hive / Apache Iceberg</div><div class="svc-desc">SQL warehouse on S3. Iceberg handles table versioning and time-travel queries</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓</div>
+
+  <div class="row row-2">
+    <div class="layer amber">
+      <div class="layer-title">⑨ Resiliency</div>
+      <div class="services s1">
+        <div class="svc"><div class="svc-name">Hystrix <span class="tag tag-custom">Netflix OSS</span></div><div class="svc-desc">Circuit breaker — if a service degrades, opens circuit and returns fallback. Stops cascade failures</div></div>
+        <div class="svc"><div class="svc-name">Chaos Monkey <span class="tag tag-custom">Netflix OSS</span></div><div class="svc-desc">Randomly kills prod instances during business hours. Forces every team to build resilient services by default</div></div>
+        <div class="svc"><div class="svc-name">Multi-Region Active-Active</div><div class="svc-desc">Runs in us-east-1, us-west-2, eu-west-1 simultaneously. Regional failover in minutes</div></div>
+      </div>
+    </div>
+
+    <div class="layer lime">
+      <div class="layer-title">⑩ Observability</div>
+      <div class="services s1">
+        <div class="svc"><div class="svc-name">Atlas <span class="tag tag-custom">Netflix Custom</span></div><div class="svc-desc">In-memory time-series metrics platform. Billions of metrics/day. Powers all dashboards and alerts</div></div>
+        <div class="svc"><div class="svc-name">Distributed Tracing (Zipkin)</div><div class="svc-desc">Traces a single request across 500+ microservices. Essential for debugging latency issues</div></div>
+        <div class="svc"><div class="svc-name">Mantis</div><div class="svc-desc">Real-time stream processing for operational data. Live tail of production events</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">↓ Content pipeline (offline)</div>
+
+  <div class="row row-1">
+    <div class="layer red">
+      <div class="layer-title">⑪ Video Encoding Pipeline (Offline Batch)</div>
+      <div class="services s4">
+        <div class="svc"><div class="svc-name">Raw Upload → S3</div><div class="svc-desc">Studio delivers raw 4K/8K masters. Stored in S3 as permanent source of truth</div></div>
+        <div class="svc"><div class="svc-name">Encoding Farm (EC2 Spot)</div><div class="svc-desc">1000s of spot instances encode each title into 1000s of bitrate + resolution + codec variants</div></div>
+        <div class="svc"><div class="svc-name">Per-Title Encoding (ML)</div><div class="svc-desc">ML analyzes each scene — action gets higher bitrate, static scenes lower. ~50% bandwidth saving</div></div>
+        <div class="svc"><div class="svc-name">Push to Open Connect</div><div class="svc-desc">Encoded chunks replicated to CDN appliances inside ISPs before title goes live</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

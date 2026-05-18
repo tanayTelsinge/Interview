@@ -3,6 +3,20 @@
       "configurations": [
         {
             "type": "java",
+            "name": "JobSequencingProblem",
+            "request": "launch",
+            "mainClass": "DSA.greedy.JobSequencingProblem",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "JobSequencingProblem",
+            "request": "launch",
+            "mainClass": "DSA.greedy.JobSequencingProblem",
+            "projectName": "Interview_clone_a2b8fd66"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "DSA.graph.topological_sort.Main",
