@@ -1,0 +1,18 @@
+# Java compiled output
+out/
+*.class
+*.jar
+
+# Angular project build artifacts
+Angular/learn-angular/node_modules/
+Angular/learn-angular/dist/
+Angular/learn-angular/.angular/
+
+# IDE configuration
+.idea/
+*.iml
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
