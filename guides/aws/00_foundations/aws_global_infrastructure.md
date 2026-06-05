@@ -233,3 +233,5 @@ aws ec2 describe-availability-zones \
 3. Switch to `ap-southeast-2` — compare service availability
 4. Go to EC2 → Instances → Launch Instance → pick a subnet → note which AZ it's in
 5. Note the AZ name vs AZ ID in the subnet details
+
+![alt text](image.png)
